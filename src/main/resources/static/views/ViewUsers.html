@@ -1,0 +1,44 @@
+<div class="col-md-12" style="margin-top:50px; margin-bottom: 80px; width: 100%;">
+<div class="panel panel-info panel-table">
+	
+	    <div class="panel-heading">
+		    <div class="row">
+	                  <div class="col col-md-12">
+	                    <h1 class="panel-title" border="2">Users</h1>
+	                  </div>
+	         </div>
+	         <hr>
+		</div><!-- Panel Heading -->
+		<div class="panel-body">
+				<table class="table table-striped table-bordered table-list">
+	                  <thead>
+	                    <tr>
+	                        <th class="hidden-xs">S.No.</th>
+	                        <th class="text-center">User ID</th>
+	                        <th class="text-center">User Name</th>
+	                        <th class="text-center">Password</th>
+	                        <th class="text-center">Address</th>
+	                        <th class="text-center">Phone</th>
+	                        <th class="text-center">Status</th>
+	                        <th class="text-center">User Type</th>
+	                        <th class="text-center">Create Date</th>
+	                    </tr> 
+	                  </thead>
+	                  <tbody>
+		                  <tr x-ng-repeat="user in users">
+	                          <td class="hidden-xs">{{user.sno}}</td>
+			                  <td><label class="control-label col-md-12">{{user.userID}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.userName}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.password}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.address}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.phone}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.status}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.userType}}</label></td>
+	                          <td><label class="control-label col-md-12">{{user.createDate}}</label></td>
+	                      </tr>
+                     </tbody>
+                </table>
+		</div>
+	    </div><!-- Panel -->
+</div>
+	    

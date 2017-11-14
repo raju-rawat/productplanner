@@ -1,0 +1,72 @@
+<div class="col-md-12" style="margin-top:50px; margin-bottom: 80px; width: 100%;">
+<div class="panel panel-info panel-table">
+	
+	    <div class="panel-heading">
+		    <div class="row">
+	                  <div class="col col-md-12">
+	                    <h1 class="panel-title" border="2">Products</h1>
+	                  </div>
+	         </div>
+	         <hr>
+		</div><!-- Panel Heading -->
+		
+		<div class="panel-body">
+				<table class="table table-striped table-bordered table-list">
+	                  <thead>
+	                    <tr>
+	                        <th class="hidden-xs">S.No.</th>
+	                        <th class="text-center">Product ID</th>
+	                        <th class="text-center">Particulars</th>
+	                        <th class="text-center">HSN Number</th>
+	                        <th class="text-center">GST</th>
+	                        <th class="text-center">Price</th>
+	                        <th class="text-center">Product Type</th>
+	                        <th class="text-center" style="width: 10%;">Status</th>
+	                        <th class="text-center" style="width: 10%;">Effective Date</th>
+	                        <th class="text-center"><span class="glyphicon glyphicon-remove"></span></th>
+	                    </tr> 
+	                  </thead>
+	                  <tbody>
+		                  <tr x-ng-repeat="prod in products">
+	                          <td class="hidden-xs">{{prod.sno}}</td>
+			                  <td><label class="control-label col-md-12">{{prod.productID}}</label></td>
+		                      <td>
+		                      	<div class="input-group"><input x-ng-change="updateProduct($index)" x-ng-model="prod.productDescription" class="form-control" type="text"/></div>
+		                      </td>
+			                  <td>
+		                      	<div class="input-group"><input x-ng-change="updateProduct($index)" x-ng-model="prod.otherProductCode" class="form-control" type="text"/></div>
+		                      </td>
+		                      <td>
+		                      	<div class="input-group"><input x-ng-change="updateProduct($index)" x-ng-model="prod.gst" class="form-control" type="number"/></div>
+		                      </td>
+		                      <td>
+		                      	<div class="input-group"><input x-ng-change="updateProduct($index)" x-ng-model="prod.rate" class="form-control" type="number"/></div>
+		                      </td>
+		                      <td>
+		                      	<div class="input-group"><input x-ng-change="updateProduct($index)" x-ng-model="prod.productType" class="form-control" type="text"/></div>
+		                      </td>
+	                          
+	                          <td>
+		                          <div class="input-group" style="width: 100%;">
+	                                <select x-ng-options="status for status in productStatus" x-ng-change="updateProduct($index)" x-ng-model="prod.status" class="form-control" >
+	                                	
+	                            	</select>
+                            	</div>
+                            </td>
+	                        <td><label class="control-label col-md-12">{{prod.effectiveDate}}</label></td>
+	                        <td align="center">
+	                             <button class="btn btn-danger" x-ng-click="deleteProduct($index)" aria-label="Remove">X</button>
+	                        </td>
+	                      </tr>
+                     </tbody>
+                </table>
+		</div><!-- Panel Body-->
+		<div class="panel-footer">
+			<div class="row">
+				<div class="col-md-offset-5 controls" class="btn-group" style="margin-bottom: 30px">
+                     <button class="btn btn-primary" x-ng-click="updateProducts()">Update Product</button>
+                </div>
+            </div>
+		</div>
+</div><!-- Panel -->
+</div>
