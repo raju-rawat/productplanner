@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>productplanner</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>BillingApplication</artifactId>
+	<version>1.0-Final</version>
 	<packaging>jar</packaging>
 
 	<name>ProductPlanner</name>

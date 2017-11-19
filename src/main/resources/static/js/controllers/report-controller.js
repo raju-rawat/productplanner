@@ -5,8 +5,6 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 			fromDate: new Date(),
 			toDate: new Date()
 	};
-	if ( $('#fromDate')[0].type != 'date' ) $('#fromDate').datepicker();
-	if ( $('#toDate')[0].type != 'date' ) $('#toDate').datepicker();
 	
 	$scope.transactionTypes=['Sales','Receipt'];
 	$scope.modes={
@@ -26,7 +24,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 		{
 			$scope.fetchCustomer();
 		}
-		if($scope.modes.sales)
+		if($scope.modes.sales || $scope.modes.stockWise)
 		{
 			$scope.fetchProducts();
 		}

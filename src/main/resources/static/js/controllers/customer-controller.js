@@ -150,5 +150,15 @@ app.controller('customerController', ['$scope','stateService','$http','deliveryN
         	$scope.generateCustomerID();
         }
     };
+    $scope.today = function () {
+        $scope.customer.startDate = new Date();
+    };
+    $scope.mindate = new Date();
+    $scope.dateformat="dd/MM/yyyy";
+    $scope.today();
+    $scope.showcalendar = function ($event) {
+        $scope.showdp = true;
+    };
+    $scope.showdp = false;
 }]);
  

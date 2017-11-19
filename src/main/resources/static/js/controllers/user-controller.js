@@ -3,7 +3,9 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 	
 	$scope.users=[];
 	$scope.user={
-			createDate: new Date()
+			createDate: new Date(),
+			status: 'Active',
+			userType: 'Normal'
 	};
 	$scope.deletedUsers=[];
 	$scope.updatedUsers=[];

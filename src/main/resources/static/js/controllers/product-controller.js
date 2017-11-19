@@ -151,4 +151,14 @@ app.controller('productController', ['$scope','$http','deliveryNoteService','$wi
         	$scope.generateProductID();
         }
     };
+    $scope.today = function () {
+        $scope.product.effectiveDate = new Date();
+    };
+    $scope.mindate = new Date();
+    $scope.dateformat="dd/MM/yyyy";
+    $scope.today();
+    $scope.showcalendar = function ($event) {
+        $scope.showdp = true;
+    };
+    $scope.showdp = false;
 }]);
