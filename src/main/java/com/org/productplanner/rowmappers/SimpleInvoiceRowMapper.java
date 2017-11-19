@@ -26,7 +26,7 @@ public class SimpleInvoiceRowMapper implements RowMapper<Invoice>{
 			invoice.setCustomerGSTIN(rs.getString(2));
 			invoice.setInvoiceID(rs.getString(4));
 			invoice.setGrossAmount(rs.getFloat(6));
-			invoice.setInvoiceDate(rs.getDate(10));
+			invoice.setInvoiceDate(rs.getDate(9));
 		}
 		else
 		{

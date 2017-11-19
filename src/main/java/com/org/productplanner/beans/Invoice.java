@@ -42,6 +42,8 @@ public class Invoice {
 	
 	private float previousBalance;
 	
+	private String paymentStatus;
+	
 	private List<Notes> notes;
 	
 	private List<Float> variants;
@@ -178,6 +180,14 @@ public class Invoice {
 		this.netAmount = netAmount;
 	}
 
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
 	public List<Notes> getNotes() {
 		return notes;
 	}
@@ -217,9 +227,8 @@ public class Invoice {
 				+ ", cgstAmount=" + cgstAmount + ", sgstAmount=" + sgstAmount + ", igstAmount=" + igstAmount
 				+ ", gstAmount=" + gstAmount + ", discountAmount=" + discountAmount + ", toDate=" + toDate
 				+ ", grossAmount=" + grossAmount + ", taxableAmount=" + taxableAmount + ", netAmount=" + netAmount
-				+ ", currentBalance=" + currentBalance + ", previousBalance=" + previousBalance + "]";
+				+ ", currentBalance=" + currentBalance + ", previousBalance=" + previousBalance + ", paymentStatus="
+				+ paymentStatus + "]";
 	}
 
-	
-	
 }

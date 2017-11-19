@@ -29,7 +29,7 @@ public class InvoiceRowMapper implements RowMapper<Invoice>{
 			invoice.setSgstAmount(rs.getFloat(8));
 			invoice.setGstAmount(rs.getFloat(9));
 			invoice.setNetAmount(rs.getFloat(10));
-			invoice.setInvoiceDate(rs.getDate(14));
+			invoice.setInvoiceDate(rs.getDate(13));
 		}
 		else
 		{

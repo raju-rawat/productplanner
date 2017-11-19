@@ -1,5 +1,5 @@
 
-var app = angular.module('productPlannerApp', ['ngRoute','ngResource','ngLoadingSpinner']);
+var app = angular.module('productPlannerApp', ['ngRoute','ngResource','ngLoadingSpinner','ngAnimate', 'ui.bootstrap']);
 
 app.config(function($routeProvider){
     $routeProvider

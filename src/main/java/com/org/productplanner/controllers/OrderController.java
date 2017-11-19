@@ -31,10 +31,10 @@ public class OrderController {
 		return orderService.generateDeliveryNoteID(orderDate,simple);
 	}
 	
-	@RequestMapping(value="/{customerId}/{simple}",method = RequestMethod.GET)
-	public @ResponseBody List<DeliveryNote> getOrders(@PathVariable(value="customerId") String customerId,@PathVariable(value="simple") boolean simple)
+	@RequestMapping(value="/fetch/{simple}",method = RequestMethod.POST)
+	public @ResponseBody List<DeliveryNote> getOrders(@RequestBody DeliveryNote deliveryNote,@PathVariable(value="simple") boolean simple)
 	{
-		return orderService.getDeliveryNote(customerId, simple);
+		return orderService.getDeliveryNote(deliveryNote,simple);
 	}
 	
 	@RequestMapping(value="/notes/{orderId}/{simple}",method = RequestMethod.GET)

@@ -2,79 +2,59 @@ package com.org.productplanner.service;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
 import com.org.productplanner.beans.User;
-import com.org.productplanner.queries.Query;
+import com.org.productplanner.repository.UserRepository;
 
 @Service
 public class UserService extends CommonService{
 
 	@Autowired
-    private JdbcTemplate jdbcTemplate;
+	private UserRepository userRepository;
 	
 	public boolean validateUser(Map<String,String> loginDetails)
     {
-    	boolean isLogin=false;
     	String password="";
-		try{
-			System.out.println("Login Data: "+loginDetails);
-			password=jdbcTemplate.queryForObject(Query.GET_PASSWORD, new Object[]{loginDetails.get("username")}, String.class);
-			if(loginDetails.get("password").equalsIgnoreCase(password))
-			{
-				isLogin=true;
-			}
-		}catch(Exception ex)
+		System.out.println("Login Data: "+loginDetails);
+		try
 		{
-			System.out.println("Error Occured: "+ex);
+			password=userRepository.getPassword(loginDetails.get("username"));
 		}
-		return isLogin;
+		catch(EmptyResultDataAccessException ex)
+		{
+			return false;
+		}
+		
+		return password.equals(loginDetails.get("password"));//Password is case sensitive
     }
 	
     public List<User> getAllUser()
     {
-    	List<User> userList=jdbcTemplate.query(
-                "SELECT * FROM TABLE_USER",
-                (rs, rowNum) -> new User(rs.getInt("OBJID"),
-                        rs.getString("USER_ID"), 
-                        rs.getString("USER_NAME"),
-                        rs.getString("PASSWORD"),
-                        rs.getString("ADDRESS"),
-                        rs.getString("PHONE"),
-                        rs.getString("STATUS"),
-                        rs.getString("USER_TYPE"), 
-                        rs.getDate("CREATE_DATE"))
-        );
-    	return userList;
+    	return userRepository.getUsers();
     }
 
-    
-    /**
-     * 
-     * @param User
-     * @return true if user is added successfully
-     * else false
-     */
-    public boolean addUser(User user)
+    public void addUser(User user)
     {
     	user.setObjid(getNEXTObjId("TABLE_USER"));
-    	int output=jdbcTemplate.update(Query.ADD_USER, new Object[]
-        			{
-        					user.getObjid(),
-        					user.getUserID(),
-        					user.getUserName(),
-        					user.getPassword(),
-        					user.getAddress(),
-        					user.getPhone(),
-        					user.getStatus(),
-        					user.getUserType(),
-        					user.getCreateDate()
-            			});
+    	userRepository.addUser(user);
     	
-    	return output==1?true:false;
     }
+
+	@SuppressWarnings("unchecked")
+	public void updateUsers(Map<String, Object> userMap) {
+		List<String> listOfUserIds=(List<String>) userMap.get("deletedUsers");
+    	List<User> listOfUsers=(List<User>) userMap.get("updatedUsers");
+    	if(listOfUserIds!=null && !listOfUserIds.isEmpty())
+    	{
+    		userRepository.delete(formatString(listOfUserIds));
+    	}
+    	if(listOfUsers!=null && !listOfUsers.isEmpty())
+    	{
+    		userRepository.update(listOfUsers);
+    	}
+		
+	}
     
 }

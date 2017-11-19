@@ -105,7 +105,7 @@ app.controller('productController', ['$scope','$http','deliveryNoteService','$wi
 	
 	$scope.updateProducts=function()
 	{
-		if($scope.deletedProducts.length==0 || $scope.deletedProducts.length==0)
+		if($scope.deletedProducts.length==0 && $scope.updatedProducts.length==0)
 		{
 			$window.alert('No product has been modified!');
 		}

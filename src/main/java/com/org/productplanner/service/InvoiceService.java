@@ -9,9 +9,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+
+import com.ibm.icu.util.StringTokenizer;
 import com.org.productplanner.beans.DeliveryNote;
 import com.org.productplanner.beans.Invoice;
 import com.org.productplanner.beans.Notes;
@@ -33,15 +36,36 @@ public class InvoiceService extends CommonService{
     {
     	if(simple)
     	{
-    		return generateID("2017-18_", "INVOICE_X_TBL", "invoiceID", null);
+    		return generateID(getFinancialYear(invoiceDate), "INVOICE_X_TBL", "invoiceID", null);
     	}
     	else
     	{
-    		return generateID("2017-18_", "INVOICE_TBL", "invoiceID", null);
+    		return generateID(getFinancialYear(invoiceDate), "INVOICE_TBL", "invoiceID", null);
     	}
 		
     }
 
+	private String getFinancialYear(Date invoiceDate)
+	{
+		String financialYear="";
+		String currentYear=getFormattedDate(new Date(), "yy");
+		
+		String inputDate=getFormattedDate(invoiceDate, "MM-yy");
+		StringTokenizer stInput=new StringTokenizer(inputDate, "-");
+		String inputMonth=stInput.nextToken();
+		String inputYear=stInput.nextToken();
+		int currYear=Integer.parseInt(currentYear);
+		if(Integer.parseInt(inputMonth)>4 && currentYear.equalsIgnoreCase(inputYear))
+		{
+			financialYear="20"+currYear+"-"+ ++currYear+"_";
+		}
+		else
+		{
+			int pre=currYear-1;
+			financialYear="20"+ pre+"-"+ currYear+"_";
+		}
+		return financialYear;
+	}
 	public boolean saveInvoice(Invoice invoice,boolean simple)
     {
     	int output=0;
@@ -53,6 +77,7 @@ public class InvoiceService extends CommonService{
     				invoice.getObjid(),
         			invoice.getInvoiceID(),
         			invoice.getCustomerID(),
+        			invoice.getGrossAmount(),
         			invoice.getGrossAmount(),
         			invoice.getInvoiceDate()
     				);
@@ -77,6 +102,7 @@ public class InvoiceService extends CommonService{
         			invoice.getCgstAmount(),
         			invoice.getSgstAmount(),
         			invoice.getGstAmount(),
+        			invoice.getNetAmount(),
         			invoice.getNetAmount(),
         			invoice.getInvoiceDate()
     				);
@@ -142,9 +168,7 @@ public class InvoiceService extends CommonService{
     	}
     	for(DeliveryNote deliveryNote: deliveryNotes)
 		{
-			
 			allNotes.addAll(getNotes(deliveryNote.getDeliveryNoteID(),simple));
-
 		}
     	System.out.println("allNotes: "+allNotes.toString());
     	return allNotes;
@@ -226,7 +250,19 @@ public class InvoiceService extends CommonService{
 		
 		return invoices;
 	}
-    
+    public float getAdvance(String customerID,boolean simple)
+    {
+    	float advance=0;
+    	try{
+    		String query=simple?GET_LATEST_X_ADVANCE:GET_LATEST_ADVANCE;
+        	Object obj= jdbcTemplate.queryForObject(query, Object.class, customerID,customerID);
+        	advance=Float.parseFloat(obj+"");
+    	}catch(EmptyResultDataAccessException e)
+    	{
+    		System.out.println("Customer "+customerID+" not found!");
+    	}
+    	return advance;
+    }
     public Map<String,Object> getInvoiceReport(Invoice invoice,boolean simple)
     {
     	List<Invoice> invoices=null;

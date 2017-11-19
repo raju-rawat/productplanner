@@ -1,6 +1,7 @@
 package com.org.productplanner.controllers;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,53 +29,45 @@ public class InvoiceController {
 	@RequestMapping(value="/generate/Id/{invoiceDate}/{simple}",method = RequestMethod.GET)
 	public @ResponseBody Map<String,String> invoice(@PathVariable(value="invoiceDate") Date invoiceDate,@PathVariable(value="simple") boolean simple)
 	{
-		System.out.println("Invoice Date: "+invoiceDate+" Simple: "+simple);
 		return invoiceService.generateInvoiceId(invoiceDate,simple);
-		
 	}
 	
 	@RequestMapping(value="/{customerId}/{simple}",method = RequestMethod.GET)
-	public @ResponseBody List<Invoice> getInvoice(@PathVariable(value="customerId") String customerId,@PathVariable(value="simple") boolean simple)
+	public @ResponseBody Map<String,Object> getInvoice(@PathVariable(value="customerId") String customerId,@PathVariable(value="simple") boolean simple)
 	{
-		return invoiceService.getInvoices(customerId, simple);
+		Map<String,Object> receipt=new HashMap<String,Object>();
+		receipt.put("invoices", invoiceService.getInvoices(customerId, simple));
+		receipt.put("openingAdvanceAmount", invoiceService.getAdvance(customerId, simple));
+		return receipt;
 	}
 	@RequestMapping(value="/report/{simple}",method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getInvoiceReport(@RequestBody Invoice invoice,@PathVariable(value="simple") boolean simple)
 	{		
-		
 		return invoiceService.getInvoiceReport(invoice, simple);
 	}
 	
 	@RequestMapping(value="/generate/{simple}",method = RequestMethod.POST)
 	public @ResponseBody List<Notes> invoice(@RequestBody Invoice invoice,@PathVariable(value="simple") boolean simple)
 	{
-		System.out.println("Generating Invoice: "+invoice.toString());
 		return invoiceService.generateInvoice(invoice,simple);
-		
 	}
 	
 	@RequestMapping(value="/generate/{invoiceId}/{simple}",method = RequestMethod.GET)
 	public @ResponseBody List<Notes> getNotesForGeneratedInvoice(@PathVariable(value="invoiceId") String invoiceId,@PathVariable(value="simple") boolean simple)
 	{
-		System.out.println("In generate Invoice");
 		return invoiceService.getNotesForGeneratedInvoice(invoiceId, simple);
-		
 	}
 	
 	@RequestMapping(value="/{simple}",method = RequestMethod.POST)
 	public @ResponseBody boolean invoiceSave(@RequestBody Invoice invoice,@PathVariable(value="simple") boolean simple)
 	{
-		System.out.println("Invoice: "+invoice);
 		return invoiceService.saveInvoice(invoice,simple);
-		
 	}
 	
 	@RequestMapping(value="/download/{simple}",method = RequestMethod.POST)
 	public @ResponseBody boolean invoiceDownload(@RequestBody Invoice invoice,HttpServletResponse response,@PathVariable(value="simple") boolean simple)
 	{
-		
 		return invoiceService.downloadInoice(invoice, response,simple);
-		
 	}
 	
 }

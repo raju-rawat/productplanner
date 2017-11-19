@@ -36,7 +36,7 @@
 	             <div class="form-group">
 	                 <label class="control-label col-md-4 text-right">From<span class="asteriskField">*</span></label>
 	                 <div class="controls col-md-8 text-left ">
-	                     <input class="input-md  textinput textInput form-control" x-ng-model="report.fromDate"  type="Date" />
+	                     <input class="input-md  textinput textInput form-control" id="fromDate" x-ng-model="report.fromDate"  type="Date" />
 	                 </div>
 	             </div>
 	        </div>
@@ -44,7 +44,7 @@
 	             <div class="form-group">
 	                 <label class="control-label col-md-4 text-right">To<span class="asteriskField">*</span></label>
 	                 <div class="controls col-md-8 text-left">
-	                     <input class="input-md  textinput textInput form-control" x-ng-model="report.toDate" type="Date" />
+	                     <input class="input-md  textinput textInput form-control" id="toDate" x-ng-model="report.toDate" type="Date" />
 	                 </div>
 	             </div>
 	        </div>
@@ -55,7 +55,7 @@
 				<button type="button" class="btn btn-primary" x-ng-click="exportReport()">Export</button>
 	        </div>
 		</div>
-		<div x-ng-hide="modes.receipt"class="row">
+		<div class="row">
 		  <div class="col-sm-2">
 		    <div class="input-group">
 		      <span class="input-group-addon">
@@ -66,37 +66,10 @@
 		  </div><!-- /.col-sm-2 -->
 		</div><!-- /.row -->
 		</div><!-- Panel Heading -->
-		<div class="panel-body">
-				<sales-report x-ng-show="modes.sales"></sales-report>
-                <receipt-report x-ng-show="modes.receipt" ></receipt-report>
-		</div><!-- Panel body-->
-		<div class="panel-footer">
-			
-				<ul class="list-group" x-ng-show="modes.sales">
-				<li class="list-group-item">
-					<div class="row">
-				  		<div class="col-md-3 text-center"><span class="glyphicon glyphicon-list-alt"></span></div>
-				  		<div class="col-md-1 text-center">CGST</div>
-				  		<div class="col-md-2 text-center">CGST AMOUNT</div>
-				  		<div class="col-md-1 text-center">SGST</div>
-				  		<div class="col-md-2 text-center">SGST AMOUNT</div>
-				  		<div class="col-md-1 text-center">IGST</div>
-				  		<div class="col-md-2 text-center">IGST AMOUNT</div>
-				  	</div>
-				  </li>
-				  <li class="list-group-item">
-				  	<div class="row" x-ng-repeat="computedVariant in report.listofVariantInstancesSum">
-				  		<div class="col-md-3 text-center">If GST is {{computedVariant.name}}% in Product</div>
-				  		<div class="col-md-1 text-center">{{computedVariant.cgst}}%</div>
-				  		<div class="col-md-2 text-center">{{computedVariant.cgstAmount}}</div>
-				  		<div class="col-md-1 text-center">{{computedVariant.sgst}}%</div>
-				  		<div class="col-md-2 text-center">{{computedVariant.sgstAmount}}</div>
-				  		<div class="col-md-1 text-center">{{computedVariant.igst}}%</div>
-				  		<div class="col-md-2 text-center">{{computedVariant.igstAmount}}</div>
-				  	</div>
-				  </li>
-				</ul>
-		</div>
+		<sales-report x-ng-show="modes.sales"></sales-report>
+        <receipt-report x-ng-show="modes.receipt" ></receipt-report>
+		<stock-wise-report x-ng-show="modes.stockWise"></stock-wise-report>
+        <party-wise-report x-ng-show="modes.partyWise" ></party-wise-report>
 	    </div>
     </div><!-- row -->
 </div><!-- Container -->

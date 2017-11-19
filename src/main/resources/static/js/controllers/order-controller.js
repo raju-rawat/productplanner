@@ -364,19 +364,60 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		
 		$scope.isSearch=true;
 		$scope.isView=false;
-		deliveryNoteService.getObject('order',$scope.deliveryNotes.customerID,$scope.simple)
-		.then(function successCallback(response) 
+		if(($scope.deliveryNotes.fromDate || $scope.deliveryNotes.toDate) && (!$scope.deliveryNotes.fromDate || !$scope.deliveryNotes.toDate))
 		{
-			console.log('success'+response.data);
-			$scope.orders=response.data;
-			var count=0;
-			angular.forEach($scope.orders,function(value,key){
-				value.sno=++count;
+			$window.alert('Please select proper range(from-to)!');
+		}
+		else
+		{
+			deliveryNoteService.submit('order/fetch/'+$scope.simple,$scope.deliveryNotes)
+			.then(function successCallback(response) 
+			{
+				$scope.orders=response.data;
+				if($scope.orders.length==0)
+				{
+					$window.alert('No Record Found!');
+				}
+				else
+				{
+					var count=0;
+					angular.forEach($scope.orders,function(value,key){
+						value.sno=++count;
+					});
+				}
+				
+			},function failureCallback(response){
+				$window.alert('Server Error!');
 			});
-		},function failureCallback(response){
-			console.log(response.status);
-			//$scope.deliveryNotes.deliveryNoteID='Error';
-		});
+			
+			
+			/*var fetchCriteria={
+					customerID: $scope.deliveryNotes.customerID,
+					fromDate: $scope.deliveryNotes.fromDate,
+					toDate: $scope.deliveryNotes.toDate,
+					simple: $scope.simple
+			};
+			deliveryNoteService.getObject('order/fetch',fetchCriteria)
+			.then(function successCallback(response) 
+			{
+				$scope.orders=response.data;
+				if($scope.orders.length==0)
+				{
+					$window.alert('No Record Found!');
+				}
+				else
+				{
+					var count=0;
+					angular.forEach($scope.orders,function(value,key){
+						value.sno=++count;
+					});
+				}
+				
+			},function failureCallback(response){
+				$window.alert('Server Error!');
+			});*/
+		}
+		
 		
 	}
 	$scope.DeleteOrder=function(index)
@@ -514,7 +555,8 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 	    		if(response.data==true)
 	    		{
 	    			$window.alert('Delivery Note Saved Successfully!');
-	    			$scope.isSaved=true;
+	    			//$scope.isSaved=true;
+	    			reset();
 	    		}
 	    		else
 				{
@@ -530,7 +572,25 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		}
 		
 	}
-		
+
+	var reset=function()
+	{
+		$scope.isSaved=false;
+        $scope.deliveryNotes={
+    			deliveryNoteID:'',
+    			deliveryDate : new Date(),
+    			customerID :'',
+    			customerName : '',
+    			grandTotal:0,
+    			notes :[]
+    	};
+        $scope.counter=0;
+        $scope.notes=[];
+        $scope.notes.push();
+		$scope.deliveryNotes.notes=$scope.notes;
+		$scope.generateDeliveryNoteID();
+	}
+	
 	$scope.downloadDeliveryNote=function()
 	{
 		$scope.isSaved=false;
@@ -549,21 +609,6 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
             });
             var pdfUrl = URL.createObjectURL(pdfFile);
             $window.open(pdfUrl);
-            $scope.isSaved=false;
-            $scope.deliveryNotes={
-        			deliveryNoteID:'',
-        			deliveryDate : new Date(),
-        			customerID :'',
-        			customerName : '',
-        			grandTotal:0,
-        			notes :[]
-        	};
-            $scope.counter=0;
-            $scope.notes=[];
-            $scope.notes.push();
-			$scope.deliveryNotes.notes=$scope.notes;
-			$scope.generateDeliveryNoteID();
-
     	}, function errorCallback(response) {
     		$window.alert('Server Error!');
     	  });

@@ -1,5 +1,5 @@
  
-app.controller('installmentReceiptController', ['$scope','deliveryNoteService','$http','$window',function($scope,deliveryNoteService,$http,$window) {
+app.controller('installmentReceiptController', ['$scope','deliveryNoteService','$http','$window','$location',function($scope,deliveryNoteService,$http,$window,$location) {
 	$scope.receipt={
 			receiptID: '',
 			receiptDate: new Date(),
@@ -8,6 +8,8 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 			comment: '',
 			closingBalance: 0,
 			totalAmtPaid: 0,
+			openingAdvanceAmount: 0.0,
+			closingAdvanceAmount: 0.0
 			};
 
 	$scope.simple=false;
@@ -42,31 +44,42 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 		});
 		$scope.generateReceipt();
 	};
-	$scope.calTotalAmtPaid=function(index)
+	$scope.calTotalAmtPaid=function()
 	{
 		$scope.receipt.closingBalance=0;
-		var invoice=$scope.receipt.invoices[index];
+		$scope.receipt.clearAmount=0;
+		
+		var totalAmtPaid=$scope.receipt.totalAmtPaid+$scope.receipt.openingAdvanceAmount;
+		angular.forEach($scope.receipt.invoices,function(invoice,key){
+			if(invoice.previousBalance<totalAmtPaid)
+			{
+				invoice.invoiceAmtPaid=invoice.previousBalance;
+			}
+			else
+			{
+				invoice.invoiceAmtPaid=totalAmtPaid;
+			}
+		totalAmtPaid-=invoice.invoiceAmtPaid;
 		invoice.currentBalance=invoice.previousBalance - invoice.invoiceAmtPaid;
-		$scope.receipt.totalAmtPaid =0;
-		angular.forEach($scope.receipt.invoices,function(value,key){
-			if(value.invoiceAmtPaid)
-				{
-					$scope.receipt.totalAmtPaid +=value.invoiceAmtPaid;
-					$scope.receipt.closingBalance+=value.currentBalance;
-				}
+		$scope.receipt.closingBalance+=invoice.currentBalance;
+		$scope.receipt.clearAmount+=invoice.invoiceAmtPaid;
 			
 		});
+		$scope.receipt.closingAdvanceAmount=totalAmtPaid;
 	};
 	$scope.generateReceipt=function()
 	{
+		$scope.receipt.openingBalance=0;
 		$scope.receipt.closingBalance=0;
 		$scope.receipt.totalAmtPaid=0;
-		$scope.errorMsg=undefined;
 		deliveryNoteService.getObject('invoice',$scope.receipt.customerID,$scope.simple).then(function successCallback(response) 
 		{ 
 			var count=0;
-			$scope.receipt.openingBalance=0;
-			$scope.receipt.invoices=response.data;
+			
+			var receipt=response.data;
+			
+			$scope.receipt.invoices=receipt.invoices;
+			$scope.receipt.openingAdvanceAmount=receipt.openingAdvanceAmount;
 			if($scope.receipt.invoices.length==0)
 			{
 				$window.alert('No Record Found!');
@@ -78,7 +91,7 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 				{
 					value.previousBalance=value.netAmount;
 				}
-				$scope.receipt.openingBalance+=value.netAmount;
+				$scope.receipt.openingBalance+=value.previousBalance;
 			});
 			
 		});
@@ -128,7 +141,7 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 	{
     	$http({
     	  method: 'POST',
-    	  url: '/receipt/download',
+    	  url: '/receipt/download/'+$scope.simple,
     	  data: $scope.receipt,
     	  responseType : 'arraybuffer',//THIS IS IMPORTANT
     	}).then(function successCallback(response) {
@@ -141,4 +154,21 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
     		  $window.alert('Server Error!');
     	  });
 	}
+	$scope.resetReceipt=function()
+	{
+		$scope.receipt={
+				receiptID: '',
+				receiptDate: new Date(),
+				customerID: '',
+				openingBalance: 0,
+				comment: '',
+				closingBalance: 0,
+				totalAmtPaid: 0,
+				openingAdvanceAmount: 0.0,
+				closingAdvanceAmount: 0.0
+				};
+		$scope.isSaved=false;
+		$scope.generateReceiptID();
+	}
+	
 }]);

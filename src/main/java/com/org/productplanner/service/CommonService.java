@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -96,7 +100,7 @@ public class CommonService {
     	SimpleDateFormat formatDate = new SimpleDateFormat("ddMMyy");
 		return formatDate.format(date);
     }
-    public String getFormattedDate(Date date,String pattern)
+    public static String getFormattedDate(Date date,String pattern)
     {
     	return  new SimpleDateFormat(pattern).format(date);
     }
@@ -142,9 +146,17 @@ public class CommonService {
     		Receipt receipt=(Receipt) object;
     		String dueAmount=receipt.getTotalAmtPaid()+"/-  ";
     		dueAmount+=NumberToWord.convert((int) receipt.getTotalAmtPaid());
+    		System.out.println("Receipt ID for simple receipt "+receipt.getReceiptID()+" Simple "+simple);
     		prepareMap.put("RECEIPT_ID", receipt.getReceiptID());
     		prepareMap.put("DUE_AMOUNT", dueAmount+" Only");
-    		jasperStream =ClassLoader.getSystemResourceAsStream("BOOT-INF/classes/templates/Receipt.jrxml");
+    		if(simple)
+    		{
+    			jasperStream =ClassLoader.getSystemResourceAsStream("BOOT-INF/classes/templates/SimpleReceipt.jrxml");
+    		}
+    		else
+    		{
+    			jasperStream =ClassLoader.getSystemResourceAsStream("BOOT-INF/classes/templates/Receipt.jrxml");
+    		}
     	}
     		
     	//InputStream jasperStream =ClassLoader.getSystemResourceAsStream("BOOT-INF/classes/templates/Invoice.jrxml");
@@ -203,4 +215,13 @@ public class CommonService {
     	}
     	return formatedString.toString();
     }
+    
+    public static CellStyle getDateStyle(HSSFWorkbook workbook)
+	{
+		CellStyle cellStyle = workbook.createCellStyle();
+	    CreationHelper createHelper = workbook.getCreationHelper();
+	    short dateFormat = createHelper.createDataFormat().getFormat("dd-MM-yyyy");
+	    cellStyle.setDataFormat(dateFormat);
+	    return cellStyle;
+	}
 }

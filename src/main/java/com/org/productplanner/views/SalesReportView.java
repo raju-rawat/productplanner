@@ -16,8 +16,10 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
+
+import com.org.productplanner.service.CommonService;
 
 @SuppressWarnings("deprecation")
 public class SalesReportView extends AbstractExcelView {
@@ -45,7 +47,7 @@ public class SalesReportView extends AbstractExcelView {
         sheet.setDefaultColumnWidth((short) 15);
         int currentRow = 0;
         short currentColumn = 0;
-        CellStyle dateStyle=getDateStyle(workbook);
+        CellStyle dateStyle=CommonService.getDateStyle(workbook);
         //CREATE STYLE FOR HEADER
         HSSFCellStyle headerStyle = workbook.createCellStyle();
         HSSFFont headerFont = workbook.createFont();
@@ -62,7 +64,7 @@ public class SalesReportView extends AbstractExcelView {
         
         HSSFCell companyValue=company.createCell(1);
         companyValue.setCellValue(companyName);
-        
+        sheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 1, 3));
         /*
          * Setting Report Title
          */
@@ -73,7 +75,7 @@ public class SalesReportView extends AbstractExcelView {
         
         HSSFCell titleValue=title.createCell(1);
         titleValue.setCellValue(sheetName);
-        
+        sheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 1, 3));
         /*
          * Setting Report Duration
          */
@@ -172,12 +174,5 @@ public class SalesReportView extends AbstractExcelView {
         }
     }
 
-	public CellStyle getDateStyle(HSSFWorkbook workbook)
-	{
-		CellStyle cellStyle = workbook.createCellStyle();
-	    CreationHelper createHelper = workbook.getCreationHelper();
-	    short dateFormat = createHelper.createDataFormat().getFormat("dd-MM-yyyy");
-	    cellStyle.setDataFormat(dateFormat);
-	    return cellStyle;
-	}
+	
 }

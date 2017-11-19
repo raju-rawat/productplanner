@@ -33,8 +33,14 @@ public class UserController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody boolean user(@RequestBody User user)
+	public @ResponseBody void AddUser(@RequestBody User user)
 	{
-		return userService.addUser(user);		
+		userService.addUser(user);		
+	}
+	
+	@RequestMapping(value="/update",method = RequestMethod.POST)
+	public @ResponseBody void UpdateUser(@RequestBody Map<String,Object> userMap)
+	{
+		userService.updateUsers(userMap);	
 	}
 }

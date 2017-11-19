@@ -26,6 +26,10 @@ public class DeliveryNote {
 	
 	private int sno;
 	
+	private java.sql.Date fromDate;
+	
+	private java.sql.Date toDate;
+	
 	public DeliveryNote()
 	{
 		
@@ -131,12 +135,28 @@ public class DeliveryNote {
 		this.sno = sno;
 	}
 
+	public java.sql.Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(java.sql.Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public java.sql.Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(java.sql.Date toDate) {
+		this.toDate = toDate;
+	}
+
 	@Override
 	public String toString() {
-		return "DeliveryNote [objid=" + objid + ", deliveryNoteID=" + deliveryNoteID + ", deliveryDate=" + deliveryDate
-				+ ", grandTotal=" + grandTotal + ", invoiceGenerated=" + invoiceGenerated + ", status=" + status + "]";
-	}	
-	
-	
-	
+		return "DeliveryNote [objid=" + objid + ", deliveryNoteID=" + deliveryNoteID + ", customerID=" + customerID
+				+ ", customerName=" + customerName + ", deliveryDate=" + deliveryDate + ", grandTotal=" + grandTotal
+				+ ", invoiceGenerated=" + invoiceGenerated + ", status=" + status + ", sno=" + sno + ", fromDate="
+				+ fromDate + ", toDate=" + toDate + "]";
+	}
+
 }

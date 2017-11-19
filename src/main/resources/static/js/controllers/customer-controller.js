@@ -104,7 +104,7 @@ app.controller('customerController', ['$scope','stateService','$http','deliveryN
 	
 	$scope.updateCustomers=function()
 	{
-		if($scope.deletedCustomers.length==0 || $scope.deletedCustomers.length==0)
+		if($scope.deletedCustomers.length==0 && $scope.updatedCustomers.length==0)
 		{
 			$window.alert('No customer has been modified!');
 		}

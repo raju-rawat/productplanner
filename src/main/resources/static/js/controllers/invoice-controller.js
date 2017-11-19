@@ -52,17 +52,15 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 			$scope.invoices=response.data;
 			if($scope.invoices.length==0)
 			{
-				$scope.errorMsg="No Record Found!";
+				$window.alert('No Record Found!');
 			}
 			else
 			{
 				$scope.isSearch=true;
-			}
-			
-			angular.forEach($scope.invoices,function(value,key){
-				value.sno=++count;
-			});
-			
+				angular.forEach($scope.invoices,function(value,key){
+					value.sno=++count;
+				});
+			}			
 		});
 	}
 	
@@ -72,7 +70,6 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 		angular.forEach($scope.customers,function(value,key){
 			if(value.customerID==_customerID)
 				{
-					console.log('In Customer ID');
 					$scope.invoice.customerName=value.customerName;
 				}
 		});
@@ -85,7 +82,6 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 		angular.forEach($scope.customers,function(value,key){
 			if(value.customerName==_customerName)
 				{
-					console.log('In Customer Name');
 					$scope.invoice.customerID=value.customerID;
 				}
 		});
@@ -95,7 +91,6 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 	$scope.fetchInvoiceNotes=function(index)
 	{
 		var inv=$scope.invoices[index];
-		$scope.errorMsg=undefined;
 		deliveryNoteService.getObject('invoice/generate',inv.invoiceID,$scope.simple)
 		.then(function successCallback(response) 
 		{
@@ -103,16 +98,16 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 			$scope.invoiceNotes=response.data;
 			if($scope.invoiceNotes.length==0)
 			{
-				$scope.errorMsg="No Record Found!";
+				$window.alert('No Record Found!');
 			}
 			else
 			{
 				$scope.isView=true;
+				angular.forEach($scope.invoiceNotes,function(value,key){
+					value.sno=++count;
+				});
 			}
 			
-			angular.forEach($scope.invoiceNotes,function(value,key){
-				value.sno=++count;
-			});
 		},function failureCallback(response){
 			console.log(response.status);
 			
@@ -132,8 +127,6 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
     	}).then(function successCallback(response) {
     	    // this callback will be called asynchronously
     	    // when the response is available
-    		$scope.successMsg='Downloading Delivery Note ... ';
-			$scope.errorMsg=undefined;
 			var pdfFile = new Blob([ response.data ], {
                 type : 'application/pdf'
             });
@@ -145,14 +138,12 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
     	  }, function errorCallback(response) {
     	    // called asynchronously if an error occurs
     	    // or server returns response with an error status.
-    		  $scope.errorMsg='Server Error!';
-    		  $scope.successMsg=undefined;
+    		  $window.alert('Server Error!');
     	  });
 	}
 	
 	$scope.generateInvoice=function()
 	{
-		$scope.errorMsg=undefined;
 		deliveryNoteService.generateInvoice($scope.invoice,$scope.simple).then(function successCallback(response) 
 		{ 
 			var count=0;
@@ -162,28 +153,24 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 			$scope.invoice.notes=response.data;
 			if($scope.invoice.notes.length==0)
 			{
-				$scope.errorMsg="No Record Found!";
+				$window.alert('No Record Found!');
 			}
 			else
 			{
-				$scope.isInvoiceGenerated=true;
-			}
-			
-			angular.forEach($scope.invoice.notes,function(value,key){
-				value.sno=++count;
-				grossAmount = grossAmount + value.netTotal;
-				cgstAmount = cgstAmount + value.cgstAmount;
-				sgstAmount = sgstAmount + value.sgstAmount;
-			});
-			if($scope.invoice.notes.length!=0)
-				{
 				$scope.isSaved=false;
-				}
-			$scope.invoice.grossAmount = grossAmount;
-			$scope.invoice.cgstAmount = cgstAmount;
-			$scope.invoice.sgstAmount = sgstAmount;
-			$scope.invoice.gstAmount = $scope.invoice.cgstAmount + $scope.invoice.sgstAmount;
-			$scope.invoice.netAmount=$scope.invoice.gstAmount + $scope.invoice.grossAmount;
+				$scope.isInvoiceGenerated=true;
+				angular.forEach($scope.invoice.notes,function(value,key){
+					value.sno=++count;
+					grossAmount = grossAmount + value.netTotal;
+					cgstAmount = cgstAmount + value.cgstAmount;
+					sgstAmount = sgstAmount + value.sgstAmount;
+				});
+				$scope.invoice.grossAmount = grossAmount;
+				$scope.invoice.cgstAmount = cgstAmount;
+				$scope.invoice.sgstAmount = sgstAmount;
+				$scope.invoice.gstAmount = $scope.invoice.cgstAmount + $scope.invoice.sgstAmount;
+				$scope.invoice.netAmount=$scope.invoice.gstAmount + $scope.invoice.grossAmount;
+			}
 			
 		});
 	}
@@ -193,12 +180,10 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 		deliveryNoteService.generateID('invoice',$scope.invoice.invoiceDate,$scope.simple)
 		.then(function successCallback(response) 
 		{
-			console.log('success'+response.data);
 			$scope.invoice.invoiceID=response.data.invoiceID;
 			
 		},function failureCallback(response){
-			console.log(response.status);
-			$scope.invoice.invoiceID='Error';
+			$window.alert('Server Error While Generating Invoice Id!');
 		});
 	}
 	
@@ -216,21 +201,16 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
     	    // when the response is available
     		if(response.data==true)
     		{
-    			$scope.successMsg='Invoice Save Successfully!';
-    			$scope.errorMsg=undefined;
     			$scope.isSaved=true;
+    			$window.alert('Invoice Save Successfully!');    			
     		}
     		else
 			{
-    			$scope.errorMsg='Unable to Save Invoice!';
-    			$scope.successMsg=undefined;
     			$scope.isSaved=false;
+    			$window.alert('Unable to Save Invoice!');
 			}
     	  }, function errorCallback(response) {
-    	    // called asynchronously if an error occurs
-    	    // or server returns response with an error status.
-    		  $scope.errorMsg='Server Error!';
-    		  $scope.successMsg=undefined;
+    		  $window.alert('Server Error!');
     	  });
 	}
 	
@@ -245,21 +225,14 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
     	}).then(function successCallback(response) {
     	    // this callback will be called asynchronously
     	    // when the response is available
-    		$scope.successMsg='Downloading Delivery Note ... ';
-			$scope.errorMsg=undefined;
 			var pdfFile = new Blob([ response.data ], {
                 type : 'application/pdf'
             });
             var pdfUrl = URL.createObjectURL(pdfFile);
             $window.open(pdfUrl);
-            //var printwWindow = $window.open(pdfUrl);
-            //printwWindow.print();
     		
     	  }, function errorCallback(response) {
-    	    // called asynchronously if an error occurs
-    	    // or server returns response with an error status.
-    		  $scope.errorMsg='Server Error!';
-    		  $scope.successMsg=undefined;
+    		  $window.alert('Server Error!');
     	  });
 	}
 	

@@ -31,7 +31,7 @@ public class ReceiptService extends CommonService{
 		System.out.println("Invoice Date: "+receiptDate+" Simple: "+simple);
     	if(simple)
     	{
-    		return generateID("S_REC_", "TABLE_RECEIPT", "receiptID", receiptDate);
+    		return generateID("S_REC_", "TABLE_X_RECEIPT", "receiptID", receiptDate);
     	}
     	else
     	{
@@ -44,8 +44,10 @@ public class ReceiptService extends CommonService{
 	{
 		System.out.println("Receipt : "+receipt.toString());
 		String updateInvoice=simple?UPDATE_X_INVOICE:UPDATE_INVOICE;
-		receipt.setObjid(getNEXTObjId("TABLE_RECEIPT"));
-		int output= jdbcTemplate.update(SAVE_RECEIPT, 
+		String saveReceipt=simple?SAVE_X_RECEIPT:SAVE_RECEIPT;
+		String saveMTM=simple?SAVE_X_MTM:SAVE_MTM;
+		receipt.setObjid(getNEXTObjId(simple?"TABLE_X_RECEIPT":"TABLE_RECEIPT"));
+		int output= jdbcTemplate.update(saveReceipt, 
 				receipt.getObjid(),
 				receipt.getReceiptID(),
 				receipt.getCustomerID(),
@@ -54,27 +56,36 @@ public class ReceiptService extends CommonService{
 				receipt.getClosingBalance(),
 				receipt.getTransactionType(),
 				receipt.getComment(),
-				receipt.getReceiptDate()
+				receipt.getReceiptDate(),
+				receipt.getClosingAdvanceAmount()
 				);
 		
 		for (Invoice invoice : receipt.getInvoices()) {
-			jdbcTemplate.update(updateInvoice,invoice.getCurrentBalance(),receipt.getReceiptID(),invoice.getInvoiceID());
+			String paymentStatus="N";
+			if(invoice.getCurrentBalance()==0)
+			{
+				paymentStatus="Y";
+			}
+			jdbcTemplate.update(saveMTM, invoice.getInvoiceID(),receipt.getReceiptID());
+			
+			jdbcTemplate.update(updateInvoice,invoice.getCurrentBalance(),paymentStatus,invoice.getInvoiceID());
 		}
 		return output==1?true:false;
 	}
 	
-	public List<Receipt> getReceipts(Receipt receipt)
+	public List<Receipt> getReceipts(Receipt receipt,boolean simple)
 	{
-		return jdbcTemplate.query(GET_RECEIPT_REPORT, 
+		String query=simple?GET_X_RECEIPT:GET_RECEIPT;
+		return jdbcTemplate.query(query, 
 				new Object[]{receipt.getFromDate(),receipt.getToDate()},
 				new ReceiptRowMapper());
 	}
 
-	public void downloadReceipt(Receipt receipt,HttpServletResponse response) 
+	public void downloadReceipt(Receipt receipt,HttpServletResponse response,boolean simple) 
 	{
 		System.out.println("Downloading receipt for : "+receipt.toString());
 		try {
-			generatePDF(receipt, response, false);
+			generatePDF(receipt, response, simple);
 		} catch (JRException | IOException | SQLException e) {
 			
 			e.printStackTrace();

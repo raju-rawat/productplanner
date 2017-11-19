@@ -58,6 +58,25 @@ app.directive('receiptReport', function() {
 	   return directive;
 	});
 
+app.directive('stockWiseReport', function() {
+	   var directive = {};
+	   
+	   directive.restrict = 'E';
+	   
+	   directive.templateUrl = "/views/StockWiseReport.html";
+	   
+	   return directive;
+	});
+
+app.directive('partyWiseReport', function() {
+	   var directive = {};
+	   
+	   directive.restrict = 'E';
+	   
+	   directive.templateUrl = "/views/PartyWiseReport.html";
+	   
+	   return directive;
+	});
 
 app.directive('addProducts', function() {
 	   var directive = {};

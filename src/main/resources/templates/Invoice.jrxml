@@ -73,26 +73,24 @@ and invoice.INVOICE_ID=$P{STR_INVOICE_ID}]]>
 			<![CDATA[select 
 dn.DELIVERY_NOTE_ID,
 dn.GRAND_TOTAL,
-prod.PROD_DESC,
-prod.OTHER_PRODUCT_CODE,
-note.NOTATION,
- note.QUANTITY,
- note.RATE,
- note.NET_TOTAL 
- from DELIVERY_NOTE_TBL dn,
-NOTE_TBL note,
-PRODUCT_TBL prod
-where prod.PROD_ID=note.PRODUCT_ID
-and note.DELIVERY_NOTE_ID=dn.DELIVERY_NOTE_ID
-and dn.INVOICE_ID=$P{STR_INVOICE_ID}]]>
+IFNULL(prod.PROD_DESC,'CANCELLED') as PROD_DESC,
+IFNULL(prod.OTHER_PRODUCT_CODE,'CANCELLED') as OTHER_PRODUCT_CODE, 
+IFNULL(note.NOTATION,'CANCELLED') as NOTATION, 
+IFNULL(note.QUANTITY,0) as QUANTITY, 
+IFNULL(note.RATE,0) as RATE, 
+IFNULL(note.NET_TOTAL,0) as NET_TOTAL
+ from  NOTE_TBL note
+RIGHT OUTER JOIN DELIVERY_NOTE_TBL dn on note.DELIVERY_NOTE_ID=dn.DELIVERY_NOTE_ID
+LEFT OUTER JOIN PRODUCT_TBL prod ON prod.PROD_ID=note.PRODUCT_ID 
+where  dn.INVOICE_ID=$P{STR_INVOICE_ID}]]>
 		</queryString>
 		<field name="DELIVERY_NOTE_ID" class="java.lang.String"/>
 		<field name="GRAND_TOTAL" class="java.lang.Float"/>
 		<field name="PROD_DESC" class="java.lang.String"/>
 		<field name="OTHER_PRODUCT_CODE" class="java.lang.String"/>
 		<field name="NOTATION" class="java.lang.String"/>
-		<field name="QUANTITY" class="java.lang.Integer"/>
-		<field name="RATE" class="java.lang.Integer"/>
+		<field name="QUANTITY" class="java.lang.Long"/>
+		<field name="RATE" class="java.lang.Float"/>
 		<field name="NET_TOTAL" class="java.lang.Float"/>
 	</subDataset>
 	<parameter name="INVOICE_ID" class="java.lang.String"/>

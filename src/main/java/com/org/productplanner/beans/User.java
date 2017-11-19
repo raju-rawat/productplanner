@@ -90,11 +90,31 @@ public class User {
 	}
 
 	public String getStatus() {
-		return status;
+		if("Active".equalsIgnoreCase(this.status))
+		{
+			return "A";
+		}
+		else if("Inactive".equalsIgnoreCase(this.status))
+		{
+			return "I";
+		}else
+		{
+			return this.status;
+		}
 	}
 
 	public void setStatus(String status) {
-		this.status = status;
+		if("A".equalsIgnoreCase(this.status))
+		{
+			this.status = "Active";
+		}
+		else if("I".equalsIgnoreCase(this.status))
+		{
+			this.status = "Inactive";
+		}else
+		{
+			this.status=status;
+		}
 	}
 
 	public String getUserType() {
@@ -102,7 +122,7 @@ public class User {
 	}
 
 	public void setUserType(String userType) {
-		this.userType = userType;
+		this.userType=userType;
 	}
 
 	public Date getCreateDate() {

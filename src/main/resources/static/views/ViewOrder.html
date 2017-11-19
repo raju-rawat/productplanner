@@ -10,24 +10,37 @@
                 <hr>
                 
                 <div class="row">
-                  <div class="form-group col col-md-4">
+                  <div class="form-group col col-md-3">
                        <label for="customerID" class="control-label col-md-4">Customer ID<span class="asteriskField">*</span> </label>
-                       <div  class="controls col-md-6 " style="margin-bottom: 30px">
+                       <div  class="controls col-md-6 " style="margin-bottom: 10px">
                            <select x-ng-change="loadCustomerName()" x-ng-options="customer.customerID as customer.customerID for customer in customers" class="form-control " x-ng-model="deliveryNotes.customerID" required></select>
                        </div>
                   </div>
-                  <div class="form-group col col-md-4">
+                  <div class="form-group col col-md-3">
                   		<label for="customerName" class="control-label col-md-4">Customer Name<span class="asteriskField">*</span> </label>
-                       <div  class="controls col-md-6 " style="margin-bottom: 30px;">
+                       <div  class="controls col-md-6 " style="margin-bottom: 10px;">
                            <select x-ng-change="loadCustomerID()" x-ng-options="customer.customerName as customer.customerName for customer in customers" class="form-control " x-ng-model="deliveryNotes.customerName" required></select>
                        </div>
                   </div>
-                  <div class="form-group col col-md-4 text-center" style="margin-bottom: 30px;">
-                  		<button class="btn btn-primary" x-ng-click="fetchOrders()"><span class="glyphicon glyphicon-search"></span>Search</button>
-                  </div>
+                  <div class="col col-xs-3">
+			        <div class="form-group">
+			            <label for="deliveryDate" class="control-label col-md-4">From Date</label>
+			            <div class="controls col-md-8 ">
+			                <input class="input-md  textinput textInput form-control" x-ng-model="deliveryNotes.fromDate" name="fromDate" style="margin-bottom: 10px" type="Date" />
+			            </div>
+			        </div>
+			      </div>
+					<div class="col col-xs-3">
+			              <div class="form-group required">
+			                  <label for="deliveryDate" class="control-label col-md-4">To Date</label>
+			                  <div class="controls col-md-8 ">
+			                      <input class="input-md  textinput textInput form-control" x-ng-model="deliveryNotes.toDate" name="toDate" style="margin-bottom: 10px" type="Date" />
+			                  </div>
+			              </div>
+			       </div>
                 </div>
-                <div class="row">
-				  <div class="col-sm-2">
+                <div class="row" style="margin-bottom: 10px;">
+				  <div class="col-md-2">
 				    <div class="input-group">
 				      <span class="input-group-addon">
 				        <input type="checkbox" x-ng-model="simple">
@@ -35,10 +48,14 @@
 				      <label class="form-control text-center">Simple</label>
 				    </div><!-- /input-group -->
 				  </div><!-- /.col-sm-2 -->
+				  <div class="col col-md-8 text-center">
+                  		<button class="btn btn-primary" x-ng-disabled="deliveryNotes.customerID | isEmpty" x-ng-click="fetchOrders()"><span class="glyphicon glyphicon-search"></span>Search</button>
+                  </div>
 				</div><!-- /.row -->
               </div>
               <div class="panel-body">
               <div x-ng-show="isSearch">
+              <div class="well well-sm"><label>ORDERS</label></div>
 	              <table class="table table-striped table-bordered table-list">
 	                  <thead>
 	                    <tr>
@@ -79,6 +96,7 @@
 	                </table>
                 </div>
                 <div x-ng-show="isView && isSearch">
+                <div class="well well-sm"><label>ORDER DETAILS</label></div>
 	                <table class="table table-striped table-bordered table-list">
 	                  <thead>
 	                    <tr>

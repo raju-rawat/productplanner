@@ -35,23 +35,23 @@
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BiliingAdapter"/>
 		<parameter name="STR_RECEIPT_ID" class="java.lang.String"/>
 		<queryString language="SQL">
-			<![CDATA[select rec.RECEIPT_ID,
-DATE_FORMAT(rec.RECEIPT_DATE, '%d-%b-%Y') as RECEIPT_DATE,
+			<![CDATA[select rec.X_RECEIPT_ID,
+DATE_FORMAT(rec.X_RECEIPT_DATE, '%d-%b-%Y') as RECEIPT_DATE,
 cust.CUSTOMER_NAME,
-rec.RECEIVED_AMT,
-rec.CLOSING_BAL,
-ADVANCE_AMOUNT 
-from TABLE_RECEIPT rec,
+rec.X_RECEIVED_AMT,
+rec.X_CLOSING_BAL,
+rec.X_ADVANCE_AMOUNT 
+from TABLE_X_RECEIPT rec,
 CUSTOMER_TBL cust 
-where rec.CUSTOMER_ID=cust.CUSTOMER_ID
-and RECEIPT_ID=$P{STR_RECEIPT_ID}]]>
+where rec.X_CUSTOMER_ID=cust.CUSTOMER_ID
+and X_RECEIPT_ID=$P{STR_RECEIPT_ID}]]>
 		</queryString>
-		<field name="RECEIPT_ID" class="java.lang.String"/>
+		<field name="X_RECEIPT_ID" class="java.lang.String"/>
 		<field name="RECEIPT_DATE" class="java.lang.String"/>
 		<field name="CUSTOMER_NAME" class="java.lang.String"/>
-		<field name="RECEIVED_AMT" class="java.lang.Float"/>
-		<field name="CLOSING_BAL" class="java.lang.Float"/>
-		<field name="ADVANCE_AMOUNT" class="java.lang.Float"/>
+		<field name="X_RECEIVED_AMT" class="java.lang.Float"/>
+		<field name="X_CLOSING_BAL" class="java.lang.Float"/>
+		<field name="X_ADVANCE_AMOUNT" class="java.lang.Float"/>
 	</subDataset>
 	<parameter name="RECEIPT_ID" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
@@ -182,7 +182,7 @@ FROM billing_db.`COMPANY_TBL`]]>
 					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="RECEIPT_DS" uuid="c21ba1e3-4e02-43cf-b37b-6bc9545606ce">
+					<datasetRun subDataset="RECEIPT_DS" uuid="703abb9f-aac3-4678-aa5b-7bfed2465b9e">
 						<datasetParameter name="STR_RECEIPT_ID">
 							<datasetParameterExpression><![CDATA[$P{RECEIPT_ID}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -200,7 +200,7 @@ FROM billing_db.`COMPANY_TBL`]]>
 							<textField>
 								<reportElement x="0" y="0" width="94" height="30" uuid="15fd6e31-0f91-417c-9b19-55b4783b1021"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{RECEIPT_ID}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{X_RECEIPT_ID}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -248,7 +248,7 @@ FROM billing_db.`COMPANY_TBL`]]>
 							<textField>
 								<reportElement x="0" y="0" width="93" height="30" uuid="7c3f9d9d-f869-49da-b6fc-d90f85bb595b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{RECEIVED_AMT}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{X_RECEIVED_AMT}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -264,7 +264,7 @@ FROM billing_db.`COMPANY_TBL`]]>
 							<textField>
 								<reportElement x="0" y="0" width="93" height="30" uuid="8743bf29-cff8-4f5d-9965-6150a5babbd7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{CLOSING_BAL}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{X_CLOSING_BAL}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -280,7 +280,7 @@ FROM billing_db.`COMPANY_TBL`]]>
 							<textField>
 								<reportElement x="0" y="0" width="93" height="30" uuid="ece78891-c41f-446d-8546-ef719c9b0c60"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{ADVANCE_AMOUNT}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{X_ADVANCE_AMOUNT}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

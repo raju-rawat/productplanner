@@ -16,10 +16,10 @@ public class Receipt {
 	private String transactionType;
 	
 	private String comment;
-	
+
 	private float closingBalance;
 	
-	
+	private float closingAdvanceAmount;
 	
 	private float totalAmtPaid;
 	
@@ -27,7 +27,7 @@ public class Receipt {
 	
 	private java.sql.Date toDate;
 	
-	private Date receiptDate;
+	private java.sql.Date receiptDate;
 	
 	private List<Invoice> invoices;
 	
@@ -67,8 +67,6 @@ public class Receipt {
 	public void setOpeningBalance(float openingBalance) {
 		this.openingBalance = openingBalance;
 	}
-	
-	
 
 	public String getTransactionType() {
 		return transactionType;
@@ -93,7 +91,14 @@ public class Receipt {
 	public void setClosingBalance(float closingBalance) {
 		this.closingBalance = closingBalance;
 	}
+	
+	public float getClosingAdvanceAmount() {
+		return closingAdvanceAmount;
+	}
 
+	public void setClosingAdvanceAmount(float closingAdvanceAmount) {
+		this.closingAdvanceAmount = closingAdvanceAmount;
+	}
 	public float getTotalAmtPaid() {
 		return totalAmtPaid;
 	}
@@ -102,7 +107,7 @@ public class Receipt {
 		this.totalAmtPaid = totalAmtPaid;
 	}
 
-	public Date getReceiptDate() {
+	public java.sql.Date getReceiptDate() {
 		return receiptDate;
 	}
 
@@ -122,7 +127,7 @@ public class Receipt {
 		this.toDate = toDate;
 	}
 
-	public void setReceiptDate(Date receiptDate) {
+	public void setReceiptDate(java.sql.Date receiptDate) {
 		this.receiptDate = receiptDate;
 	}
 

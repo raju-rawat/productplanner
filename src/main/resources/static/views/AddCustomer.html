@@ -33,8 +33,14 @@
                         <div  class="form-group required" style="margin-right: 30px">
                              <label for="id_password2" class="control-label col-md-4  requiredField"> Phone Number<span class="asteriskField">*</span> </label>
                              <div class="controls col-md-8 ">
-                                <input class="input-md textinput textInput form-control" x-ng-model="customer.phone" name="phoneNumber" placeholder=" Enter Phone Number" style="margin-bottom: 10px" type="text" required/>
+                                <input class="input-md textinput textInput form-control" x-ng-model="customer.phone" x-ng-maxlength="10" name="phone" placeholder=" Enter Phone Number" style="margin-bottom: 10px" type="number" required/>
+	                            <span class="help-block" 
+					                  x-ng-show="(customerform.phone.$error.maxlength && 
+					                           customerform.phone.$dirty)">
+					                           <label class="label label-danger">phone number should not be more than 10 digits!</label>
+					            </span>
                             </div>
+                            
                         </div>
                         
                         <div class="form-group required" style="margin-right: 30px"> 

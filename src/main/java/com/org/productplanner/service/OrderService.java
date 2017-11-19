@@ -3,6 +3,7 @@ package com.org.productplanner.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -172,13 +173,25 @@ public class OrderService extends CommonService{
     	System.out.println("Added Notes.");
     }
    
-    public List<DeliveryNote> getDeliveryNote(String customerId,boolean simple)
+    public List<DeliveryNote> getDeliveryNote(DeliveryNote deliveryNote,boolean simple)
     {
+    	String query="";
+    	System.out.println("Getting Delivery Notes .....................");
+    	String customerId=deliveryNote.getCustomerID();
+    	java.sql.Date fromDate=deliveryNote.getFromDate();
+    	java.sql.Date toDate=deliveryNote.getToDate();
     	System.out.println("Customer Id: "+customerId+" taxable: "+simple);
     	List<DeliveryNote> deliveryNotes=null;
-    	String query=simple?GET_X_DELIVERY_NOTES:GET_DELIVERY_NOTES;
-    	
-    	deliveryNotes=jdbcTemplate.query(query, new Object[]{customerId}, new DeliveryNoteRowMapper());
+    	if(fromDate!=null && toDate!=null)
+    	{
+    		query=simple?GET_X_DELIVERY_NOTES_IN_RANGE:GET_DELIVERY_NOTES_IN_RANGE;
+    		deliveryNotes=jdbcTemplate.query(query, new Object[]{customerId,fromDate,toDate}, new DeliveryNoteRowMapper());
+    	}
+    	else
+    	{
+    		query=simple?GET_X_DELIVERY_NOTES:GET_DELIVERY_NOTES;
+    		deliveryNotes=jdbcTemplate.query(query, new Object[]{customerId}, new DeliveryNoteRowMapper());
+    	}
     	
     	for(DeliveryNote dn:deliveryNotes)
 		{

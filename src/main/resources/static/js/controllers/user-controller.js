@@ -2,6 +2,9 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 	$scope.heading='Create User';
 	
 	$scope.users=[];
+	$scope.user={
+			createDate: new Date()
+	};
 	$scope.deletedUsers=[];
 	$scope.updatedUsers=[];
 	$scope.modes={
@@ -10,7 +13,7 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 			edit : false,
 	};
 	
-	$scope.userStatus=['Active','InActive'];
+	$scope.userStatus=['Active','Inactive'];
 	$scope.userTypes=['Normal','Admin','Super Admin'];
 	
 	$scope.changeMode=function(activeMode)
@@ -30,8 +33,15 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 		{
 			var count=0;
 			$scope.users=response.data;
-			angular.forEach($scope.users,function(value,key){
-				value.sno=++count;
+			angular.forEach($scope.users,function(user,key){
+				user.sno=++count;
+				if(user.status=='A')
+				{
+					user.status='Active';
+				}else if(user.status=='I')
+				{
+					user.status='Inactive';
+				}
 			});
 		});
 	}
@@ -62,7 +72,7 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 	
 	$scope.updateUsers=function()
 	{
-		if($scope.deletedUsers.length==0 || $scope.updatedUsers.length==0)
+		if($scope.deletedUsers.length==0 && $scope.updatedUsers.length==0)
 		{
 			$window.alert('No user has been modified!');
 		}
@@ -105,27 +115,15 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 		}
 		else
 		{
-			// Simple POST request
+			$scope.errorMsg=undefined;
 	    	$http({
 	    	  method: 'POST',
 	    	  url: '/user',
 	    	  data: user
 	    	}).then(function successCallback(response) {
-	    	    // this callback will be called asynchronously
-	    	    // when the response is available
-	    		if(response.data==true)
-	    		{
-	    			$scope.successMsg='User Created Successfully!';
-	    			$scope.errorMsg=undefined;
-	    		}
-	    		else
-				{
-	    			$scope.errorMsg='Unable to create user!';
-				}
+	    		$window.alert('User Created Successfully!');
 	    	  }, function errorCallback(response) {
-	    	    // called asynchronously if an error occurs
-	    	    // or server returns response with an error status.
-	    		  $scope.errorMsg='Server Error!';
+	    		  $window.alert('Server Error!');
 	    	  });
 		}
 		
@@ -135,10 +133,23 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
         if (userform) {
         	userform.$setPristine();
         	userform.$setUntouched();
-        	$scope.user={};
-        	$scope.successMsg=undefined;
+        	$scope.user={
+        			createDate: new Date()
+        	};
         	$scope.errorMsg=undefined;
         }
     };
-	
+    
+    
+    $scope.today = function () {
+        $scope.user.createDate = new Date();
+    };
+    $scope.mindate = new Date();
+    $scope.dateformat="dd/MM/yyyy";
+    $scope.today();
+    $scope.showcalendar = function ($event) {
+        $scope.showdp = true;
+    };
+    $scope.showdp = false;
+
 }]);

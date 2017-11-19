@@ -36,15 +36,15 @@ public class ReceiptController {
 		return receiptService.saveReceipt(receipt,simple);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody List<Receipt> getReceipts(@RequestBody Receipt receipt)
+	@RequestMapping(value="/{simple}",method = RequestMethod.POST)
+	public @ResponseBody List<Receipt> getReceipts(@RequestBody Receipt receipt,@PathVariable(value="simple") boolean simple)
 	{
-		return receiptService.getReceipts(receipt);
+		return receiptService.getReceipts(receipt,simple);
 	}
 	
-	@RequestMapping(value="/download",method = RequestMethod.POST)
-	public @ResponseBody void download(@RequestBody Receipt receipt,HttpServletResponse response)
+	@RequestMapping(value="/download/{simple}",method = RequestMethod.POST)
+	public @ResponseBody void download(@RequestBody Receipt receipt,HttpServletResponse response,@PathVariable(value="simple") boolean simple)
 	{
-		receiptService.downloadReceipt(receipt,response);
+		receiptService.downloadReceipt(receipt,response,simple);
 	}
 }

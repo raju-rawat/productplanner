@@ -21,15 +21,15 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 import com.org.productplanner.service.CommonService;
 
-
 @SuppressWarnings("deprecation")
-public class ReceiptReportView extends AbstractExcelView {
+public class StockWiseReportView extends AbstractExcelView {
+
 	@SuppressWarnings("unchecked")
-    protected void buildExcelDocument(Map<String, Object> model,
-            HSSFWorkbook workbook,
-            HttpServletRequest request,
-            HttpServletResponse response)
-    {
+	@Override
+	protected void buildExcelDocument(Map<String, Object> model, HSSFWorkbook workbook, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+
 		//VARIABLES REQUIRED IN MODEL
 		String companyName=(String)model.get("companyName");
         String sheetName = (String)model.get("sheetname");
@@ -42,7 +42,7 @@ public class ReceiptReportView extends AbstractExcelView {
             numericColumns = (List<String>)model.get("numericcolumns");
         //BUILD DOC
         HSSFSheet sheet = workbook.createSheet(sheetName);
-        sheet.setDefaultColumnWidth((short) 20);
+        sheet.setDefaultColumnWidth((short) 15);
         int currentRow = 0;
         short currentColumn = 0;
         CellStyle dateStyle=CommonService.getDateStyle(workbook);
@@ -62,7 +62,6 @@ public class ReceiptReportView extends AbstractExcelView {
         
         HSSFCell companyValue=company.createCell(1);
         companyValue.setCellValue(companyName);
-        
         sheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 1, 3));
         /*
          * Setting Report Title
@@ -90,7 +89,6 @@ public class ReceiptReportView extends AbstractExcelView {
         HSSFCell toCell=duration.createCell(2);
         toCell.setCellValue(toDate);
         toCell.setCellStyle(dateStyle);
-                
         currentRow=currentRow+4;
         HSSFRow headerRow = sheet.createRow(currentRow);
         for(String header:headers){
@@ -134,12 +132,22 @@ public class ReceiptReportView extends AbstractExcelView {
         
         currentRow=currentRow+3;
         HSSFRow endOfReport = sheet.createRow(++currentRow);
-        HSSFCell totalAmtReceived=endOfReport.createCell(0);
-        totalAmtReceived.setCellValue("Total Amount Received");
-        totalAmtReceived.setCellStyle(headerStyle);
+        HSSFCell totalQuantity=endOfReport.createCell(0);
+        totalQuantity.setCellValue("Total Quantity");
+        totalQuantity.setCellStyle(headerStyle);
         
-        HSSFCell totalAmtReceivedValue=endOfReport.createCell(1);
-        totalAmtReceivedValue.setCellValue(Double.parseDouble(""+model.get("totalAmtReceived")));
+        HSSFCell totalQuantityValue=endOfReport.createCell(1);
+        totalQuantityValue.setCellValue(Double.parseDouble(""+model.get("totalQuantity")));
         
-    }
+        HSSFCell totalAmount=endOfReport.createCell(2);
+        totalAmount.setCellValue("Total Amount");
+        totalAmount.setCellStyle(headerStyle);
+        
+        HSSFCell totalAmountValue=endOfReport.createCell(3);
+        totalAmountValue.setCellValue(Double.parseDouble(""+model.get("totalAmount")));
+    
+		
+		
+	}
+
 }

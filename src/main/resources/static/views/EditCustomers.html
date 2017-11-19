@@ -8,6 +8,17 @@
 	                  </div>
 	         </div>
 	         <hr>
+	         <div class="row" style="margin-bottom: 10px">
+				<div class="col-md-6 text-left">
+		            <form class="search-form">
+		                <div class="form-group has-feedback">
+		            		<label class="sr-only">Search</label>
+		            		<input type="text" class="form-control" x-ng-model="searchString" placeholder="search">
+		              		<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		            	</div>
+		            </form>
+        		</div>
+			</div>
 		</div><!-- Panel Heading -->
 		<div class="panel-body">
 				<table class="table table-striped table-bordered table-list">
@@ -27,7 +38,7 @@
 	                    </tr> 
 	                  </thead>
 	                  <tbody>
-		                  <tr x-ng-repeat="cust in customers">
+		                  <tr x-ng-repeat="cust in customers | filter : searchString">
 	                          <td class="hidden-xs">{{cust.sno}}</td>
 	                          <td><label class="control-label col-md-12">{{cust.customerID}}</label></td>
 	                          <td>

@@ -7,7 +7,7 @@ app.controller('homeController', function($rootScope) {
 	}
 });
 
-app.controller('loginController', ['$scope','$rootScope','$location','$http',function($scope,$rootScope,$location,$http) {
+app.controller('loginController', ['$scope','$rootScope','$location','$http','$window',function($scope,$rootScope,$location,$http,$window) {
 	$scope.heading='Login In';
 	$scope.login=function(user)
     {
@@ -28,12 +28,11 @@ app.controller('loginController', ['$scope','$rootScope','$location','$http',fun
     		else
     		{
     			$scope.loginError='Invalid User Credentials!';
-    			$scope.loginError=undefined;
     		}
     	  }, function errorCallback(response) {
     	    // called asynchronously if an error occurs
     	    // or server returns response with an error status.
-    		  $scope.loginError='Server Error!';
+    		  $window.alert('Server Error!');
     		  $scope.loginError=undefined;
     	  });
     	
