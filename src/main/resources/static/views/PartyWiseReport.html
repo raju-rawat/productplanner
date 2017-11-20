@@ -28,6 +28,7 @@
          <th class="text-center">Transaction Date</th>
          <th class="text-center">Reference Number</th>
          <th class="text-center">Transaction Amount</th>
+         <th class="text-center">Report Type</th>
      </tr>
    </thead>
    <tbody>
@@ -37,6 +38,7 @@
      	   <td><label class="control-label col-md-12 text-center">{{party.transactionDate | date:'dd-MM-yyyy'}}</label></td>
            <td><label class="control-label col-md-12 text-center">{{party.referenceNumber}}</label></td>
            <td><label class="control-label col-md-12 text-center">{{party.transactionAmount | number:2}}</label></td>
+           <td><label class="control-label col-md-12 text-center">{{party.reportType}}</label></td>
        </tr>
      </tbody>
 </table>

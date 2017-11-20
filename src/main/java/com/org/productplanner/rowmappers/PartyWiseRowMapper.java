@@ -16,6 +16,7 @@ public class PartyWiseRowMapper implements RowMapper<PartyWise>{
 		party.setTransactionDate(rs.getDate(2));
 		party.setTransactionAmount(rs.getFloat(3));
 		party.setTransactionBalance(rs.getFloat(4));
+		party.setReportType(rs.getString(5));
 		return party;
 	}
 

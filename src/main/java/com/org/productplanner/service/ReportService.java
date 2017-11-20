@@ -38,15 +38,23 @@ public class ReportService {
 	
 	public List<PartyWise> getParties(Report report, boolean simple)
 	{
+		List<PartyWise> allPartyWiseReport=new ArrayList<PartyWise>();
 		if("SALES".equalsIgnoreCase(report.getTransactionType()))
 		{
 			reportRepository.setQuery(simple?GET_X_SALES:GET_SALES);
 		}
-		else
+		else if("RECEIPT".equalsIgnoreCase(report.getTransactionType()))
 		{
 			reportRepository.setQuery(simple?GET_X_REC:GET_REC);
 		}
-		
+		else
+		{
+			reportRepository.setQuery(simple?GET_X_SALES:GET_SALES);
+			allPartyWiseReport.addAll(reportRepository.getParties(report));
+			reportRepository.setQuery(simple?GET_X_REC:GET_REC);
+			allPartyWiseReport.addAll(reportRepository.getParties(report));
+			return allPartyWiseReport;
+		}
 		return reportRepository.getParties(report);
 	}
 	public Map<String, ?> exportReceiptReport(Report report,HttpServletResponse response)
@@ -242,6 +250,7 @@ public class ReportService {
         headers.add("TRANSACTION DATE");
         headers.add("REFERENCE NUMBER");
         headers.add("TRANSACTION AMOUNT");
+        headers.add("REPORT TYPE");
         model.put("headers", headers);
         //Results Table (List<Object[]>)
         int sno=0;
@@ -255,6 +264,7 @@ public class ReportService {
         	row.add(partyWise.getTransactionDate());
         	row.add(partyWise.getReferenceNumber());
         	row.add(partyWise.getTransactionAmount());
+        	row.add(partyWise.getReportType());
         	results.add(row);
 		}
         model.put("results",results);

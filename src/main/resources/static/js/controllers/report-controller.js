@@ -6,7 +6,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 			toDate: new Date()
 	};
 	
-	$scope.transactionTypes=['Sales','Receipt'];
+	$scope.transactionTypes=['Sales','Receipt','Sales/Receipt'];
 	$scope.modes={
 			sales : false,
 			stockWise : false,
