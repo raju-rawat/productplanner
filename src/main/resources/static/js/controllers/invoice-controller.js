@@ -1,22 +1,26 @@
 app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$window',function($scope,$http,deliveryNoteService,$window) {
 	$scope.heading='Invoice';
-	$scope.invoice={
-			invoiceID: '',
-			invoiceDate: new Date(),
-			customerID: '',
-			customerName: '',
-			notes: []
-			};
-	$scope.invoices=[];
-	$scope.invoiceNotes=[]
-	$scope.isSaved=false;
-	$scope.simple=false;
-	$scope.isInvoiceGenerated=false;
-	$scope.createMode=true;
-	$scope.viewMode=false;
-	$scope.editMode=false;
-	$scope.isSearch=false;
 	
+	reset=function()
+	{
+		$scope.invoice={
+				invoiceID: '',
+				invoiceDate: new Date(),
+				customerID: '',
+				customerName: '',
+				notes: []
+				};
+		$scope.invoices=[];
+		$scope.invoiceNotes=[]
+		$scope.isSaved=false;
+		$scope.simple=false;
+		$scope.isInvoiceGenerated=false;
+		$scope.createMode=true;
+		$scope.viewMode=false;
+		$scope.editMode=false;
+		$scope.isSearch=false;
+	}
+	reset();
 	$scope.changeMode=function(mode)
 	{
 		if(mode=='create')
@@ -49,10 +53,12 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 		deliveryNoteService.getObject('invoice',$scope.invoice.customerID,$scope.simple).then(function successCallback(response) 
 		{ 
 			var count=0;
-			$scope.invoices=response.data;
+			var resp=response.data;
+			$scope.invoices=resp.invoices;
 			if($scope.invoices.length==0)
 			{
 				$window.alert('No Record Found!');
+				clearInvoiceSearch();
 			}
 			else
 			{
@@ -63,7 +69,13 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
 			}			
 		});
 	}
-	
+	clearInvoiceSearch=function()
+	{
+		$scope.invoices=[];
+		$scope.invoiceNotes=[];
+		$scope.isSearch=false;
+		$scope.isView=false;
+	}
 	$scope.loadCustomerName=function()
 	{
 		var _customerID=$scope.invoice.customerID;
@@ -230,7 +242,7 @@ app.controller('invoiceController', ['$scope','$http','deliveryNoteService','$wi
             });
             var pdfUrl = URL.createObjectURL(pdfFile);
             $window.open(pdfUrl);
-    		
+            reset();
     	  }, function errorCallback(response) {
     		  $window.alert('Server Error!');
     	  });

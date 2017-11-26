@@ -5,7 +5,8 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 			receiptDate: new Date(),
 			customerID: '',
 			openingBalance: 0,
-			comment: '',
+			transactionType: 'Cash',
+			comment: 'NA',
 			closingBalance: 0,
 			totalAmtPaid: 0,
 			openingAdvanceAmount: 0.0,
@@ -13,6 +14,7 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 			};
 
 	$scope.simple=false;
+	$scope.isSaveDisabled=true;
 	
 	
 	//This service gets the Customer ID and Customer Name
@@ -48,7 +50,7 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 	{
 		$scope.receipt.closingBalance=0;
 		$scope.receipt.clearAmount=0;
-		
+		$scope.receipt.totalAmtPaid=parseInt($scope.receipt.totalAmtPaid);
 		var totalAmtPaid=$scope.receipt.totalAmtPaid+$scope.receipt.openingAdvanceAmount;
 		angular.forEach($scope.receipt.invoices,function(invoice,key){
 			if(invoice.previousBalance<totalAmtPaid)
@@ -66,6 +68,7 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 			
 		});
 		$scope.receipt.closingAdvanceAmount=totalAmtPaid;
+		$scope.isSaveDisabled=false;
 	};
 	$scope.generateReceipt=function()
 	{
@@ -170,5 +173,17 @@ app.controller('installmentReceiptController', ['$scope','deliveryNoteService','
 		$scope.isSaved=false;
 		$scope.generateReceiptID();
 	}
-	
+	$scope.checkNegativeVal=function(value)
+	{
+		if(value.indexOf('-')!=-1)
+		{
+			$scope.error='Negative values are not allowed!';
+			$scope.enableCalculate=false;
+		}
+		else
+		{
+			$scope.error='';
+			$scope.enableCalculate=true;
+		}
+	}
 }]);

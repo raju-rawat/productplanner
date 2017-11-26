@@ -13,6 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.icu.util.StringTokenizer;
 import com.org.productplanner.beans.DeliveryNote;
@@ -66,6 +67,7 @@ public class InvoiceService extends CommonService{
 		}
 		return financialYear;
 	}
+	@Transactional
 	public boolean saveInvoice(Invoice invoice,boolean simple)
     {
     	int output=0;

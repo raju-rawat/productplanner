@@ -1,18 +1,18 @@
 <div class="panel-body">
 <div class="row">
-<div class="form-group col col-xs-3">
+<div class="form-group col col-xs-4">
    <label class="control-label col-md-4">Customer ID<span class="asteriskField">*</span> </label>
    <div  class="controls col-md-6 " style="margin-bottom: 30px">
          <select x-ng-change="loadCustomerName()" x-ng-options="customer.customerID as customer.customerID for customer in customers" class="form-control " x-ng-model="report.customerID"></select>
    </div>
 </div>
-<div class="form-group col col-xs-3">
+<div class="form-group col col-xs-4">
    <label class="control-label col-md-4">Customer Name<span class="asteriskField">*</span> </label>
    <div  class="controls col-md-6 " style="margin-bottom: 30px;width:60%">
          <select x-ng-change="loadCustomerID()" x-ng-options="customer.customerName as customer.customerName for customer in customers" class="form-control " x-ng-model="report.customerName"></select>
   </div>
 </div>
-<div class="form-group col col-xs-3">
+<div class="form-group col col-xs-4">
    <label class="control-label col-md-4">Report Type<span class="asteriskField">*</span> </label>
    <div  class="controls col-md-6 " style="margin-bottom: 30px;width:60%">
          <select x-ng-options="transactionType for transactionType in transactionTypes" class="form-control " x-ng-model="report.transactionType"></select>
@@ -27,8 +27,8 @@
          <th class="text-center">Transaction Type</th>
          <th class="text-center">Transaction Date</th>
          <th class="text-center">Reference Number</th>
+         <th class="text-center">Invoice Amount</th>
          <th class="text-center">Transaction Amount</th>
-         <th class="text-center">Report Type</th>
      </tr>
    </thead>
    <tbody>
@@ -38,7 +38,7 @@
      	   <td><label class="control-label col-md-12 text-center">{{party.transactionDate | date:'dd-MM-yyyy'}}</label></td>
            <td><label class="control-label col-md-12 text-center">{{party.referenceNumber}}</label></td>
            <td><label class="control-label col-md-12 text-center">{{party.transactionAmount | number:2}}</label></td>
-           <td><label class="control-label col-md-12 text-center">{{party.reportType}}</label></td>
+           <td><label class="control-label col-md-12 text-center">{{party.invoiceAmount}}</label></td>
        </tr>
      </tbody>
 </table>

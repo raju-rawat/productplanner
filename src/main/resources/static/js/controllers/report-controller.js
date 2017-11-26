@@ -192,7 +192,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 						$scope.report.closingBalance=0;
 						angular.forEach($scope.report.parties,function(value,key){
 							value.sno=++count;
-							value.transactionType=$scope.report.transactionType;
+							//value.transactionType=$scope.report.transactionType;
 							$scope.report.closingBalance +=value.transactionBalance;
 						});
 					}

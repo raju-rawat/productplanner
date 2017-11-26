@@ -79,7 +79,7 @@
                             <label class="control-label col-md-4"> Create Date<span class="asteriskField">*</span> </label>
                             <div class="col-md-8">
                             	<div class="input-group" style="margin-bottom: 20px;">
-	                            	<input class="form-control" x-ng-model="user.createDate" name="effectiveDate" type="text" uib-datepicker-popup="{{dateformat}}" min-date="mindate" is-open="showdp" />
+	                            	<input class="form-control" x-ng-disabled="true" x-ng-model="user.createDate" name="effectiveDate" type="text" uib-datepicker-popup="{{dateformat}}" min-date="mindate" is-open="showdp" />
 							    	<span class="input-group-btn">
 							            <button type="button" class="btn btn-default" ng-click="showcalendar($event)">
 							                <i class="glyphicon glyphicon-calendar"></i>

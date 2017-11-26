@@ -271,24 +271,24 @@ public class Query {
 										  .toString();
 	
 	public static final String GET_SALES=new StringBuilder()
-										 .append("select INVOICE_ID,INVOICE_DATE,INVOICE_AMOUNT,IFNULL(BALANCE,0),\"Sales\" from INVOICE_TBL where CUSTOMER_ID= ? ")
+										 .append("select INVOICE_ID,INVOICE_DATE,INVOICE_AMOUNT,IFNULL(BALANCE,0),\"Sales\",INVOICE_AMOUNT from INVOICE_TBL where CUSTOMER_ID= ? ")
 										 .append("and DATE_FORMAT(INVOICE_DATE, '%Y-%m-%d') >= ? and DATE_FORMAT(INVOICE_DATE, '%Y-%m-%d') <= ? ")
 										 .toString();
 
 	public static final String GET_X_SALES=new StringBuilder()
-										  .append("select X_INVOICE_ID,X_INVOICE_DATE,X_GROSS_AMOUNT,IFNULL(X_BALANCE,0),\"Sales\" from INVOICE_X_TBL where X_CUSTOMER_ID= ? ")
+										  .append("select X_INVOICE_ID,X_INVOICE_DATE,X_GROSS_AMOUNT,IFNULL(X_BALANCE,0),\"Sales\",X_INVOICE_AMOUNT from INVOICE_X_TBL where X_CUSTOMER_ID= ? ")
 										  .append("and DATE_FORMAT(X_INVOICE_DATE, '%Y-%m-%d') >= ? and DATE_FORMAT(X_INVOICE_DATE, '%Y-%m-%d') <= ? ")
 										  .toString();
 	
 	public static final String GET_REC=new StringBuilder()
-									   .append("select rec.RECEIPT_ID,rec.RECEIPT_DATE,rec.RECEIVED_AMT,IFNULL(inv.BALANCE,0),\"Receipt\" ")
+									   .append("select concat(rec.RECEIPT_ID,' / ',inv.INVOICE_ID),rec.RECEIPT_DATE,rec.RECEIVED_AMT,IFNULL(inv.BALANCE,0),'Receipt',INVOICE_AMOUNT ")
 									   .append("from TABLE_RECEIPT rec,TABLE_MTM_INV_REC mtm,INVOICE_TBL inv where rec.CUSTOMER_ID= ? ")
 									   .append("and rec.RECEIPT_ID=mtm.RECEIPT_ID and mtm.INVOICE_ID=inv.INVOICE_ID ")
 									   .append("and DATE_FORMAT(rec.RECEIPT_DATE, '%Y-%m-%d') >= ? and DATE_FORMAT(rec.RECEIPT_DATE, '%Y-%m-%d') <= ? ")
 									   .toString();
 
 	public static final String GET_X_REC=new StringBuilder()
-									   .append("select rec.X_RECEIPT_ID,rec.X_RECEIPT_DATE,rec.X_RECEIVED_AMT,IFNULL(inv.X_BALANCE,0),\"Receipt\" ")
+									   .append("select concat(rec.X_RECEIPT_ID,' / ',inv.X_INVOICE_ID),rec.X_RECEIPT_DATE,rec.X_RECEIVED_AMT,IFNULL(inv.X_BALANCE,0),\"Receipt\",X_INVOICE_AMOUNT ")
 									   .append("from TABLE_X_RECEIPT rec,TABLE_X_MTM_INV_REC mtm,INVOICE_X_TBL inv where rec.X_CUSTOMER_ID= ? ")
 									   .append("and rec.X_RECEIPT_ID=mtm.X_RECEIPT_ID and mtm.X_INVOICE_ID=inv.X_INVOICE_ID ")
 									   .append("and DATE_FORMAT(rec.X_RECEIPT_DATE, '%Y-%m-%d') >= ? and DATE_FORMAT(rec.X_RECEIPT_DATE, '%Y-%m-%d') <= ? ")

@@ -250,7 +250,6 @@ public class ReportService {
         headers.add("TRANSACTION DATE");
         headers.add("REFERENCE NUMBER");
         headers.add("TRANSACTION AMOUNT");
-        headers.add("REPORT TYPE");
         model.put("headers", headers);
         //Results Table (List<Object[]>)
         int sno=0;
@@ -264,7 +263,6 @@ public class ReportService {
         	row.add(partyWise.getTransactionDate());
         	row.add(partyWise.getReferenceNumber());
         	row.add(partyWise.getTransactionAmount());
-        	row.add(partyWise.getReportType());
         	results.add(row);
 		}
         model.put("results",results);

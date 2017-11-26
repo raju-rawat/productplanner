@@ -1,22 +1,17 @@
 package com.org.productplanner.service;
 
-import java.io.IOException;
-import java.sql.SQLException;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.org.productplanner.beans.Invoice;
 import com.org.productplanner.beans.Receipt;
 import com.org.productplanner.rowmappers.ReceiptRowMapper;
-
-import net.sf.jasperreports.engine.JRException;
 
 import static com.org.productplanner.queries.Query.*;
 
@@ -39,7 +34,7 @@ public class ReceiptService extends CommonService{
     	}
 		
     }
-	
+	@Transactional
 	public boolean saveReceipt(Receipt receipt,boolean simple)
 	{
 		System.out.println("Receipt : "+receipt.toString());
@@ -86,7 +81,7 @@ public class ReceiptService extends CommonService{
 		System.out.println("Downloading receipt for : "+receipt.toString());
 		try {
 			generatePDF(receipt, response, simple);
-		} catch (JRException | IOException | SQLException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}

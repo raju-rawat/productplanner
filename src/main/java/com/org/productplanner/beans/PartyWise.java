@@ -14,7 +14,7 @@ public class PartyWise {
 	
 	private float transactionBalance;
 	
-	private String reportType;
+	private float invoiceAmount;
 	
 	public PartyWise()
 	{
@@ -61,19 +61,12 @@ public class PartyWise {
 		this.transactionBalance = transactionBalance;
 	}
 
-	public String getReportType() {
-		return reportType;
+	public float getInvoiceAmount() {
+		return invoiceAmount;
 	}
 
-	public void setReportType(String reportType) {
-		this.reportType = reportType;
-	}
-
-	@Override
-	public String toString() {
-		return "PartyWise [transactionType=" + transactionType + ", transactionDate=" + transactionDate
-				+ ", referenceNumber=" + referenceNumber + ", transactionAmount=" + transactionAmount
-				+ ", transactionBalance=" + transactionBalance + ", reportType=" + reportType + "]";
+	public void setInvoiceAmount(float invoiceAmount) {
+		this.invoiceAmount = invoiceAmount;
 	}
 	
 

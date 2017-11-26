@@ -115,17 +115,20 @@
                  </div>
              </div>
 		</div>
+		<div class="row" style="margin-bottom: 10px" x-ng-if="!(error | isEmpty)">
+			<div class="alert alert-danger col-sm-6" >{{error}}</div>
+		</div>
 		<div class="row" style="margin-bottom: 10px">
              <div class="form-group">
                  <label class="control-label col-md-2">Total Amount Paid : </label>
                  <div class="controls col-md-4 text-left ">
-                 	 <input class="input-md  textinput textInput form-control" x-ng-model="receipt.totalAmtPaid"  type="number" />
+                 	 <input class="input-md  textinput textInput form-control" x-ng-change="checkNegativeVal(receipt.totalAmtPaid)" x-ng-model="receipt.totalAmtPaid" type="text" />
                  </div>
              </div>
 		</div>
 		<div class="row" style="margin-bottom: 10px">
 		<div class="col col-xs-4 text-right">
-                  <button type="button" class="btn btn-primary" x-ng-disabled="isSaved" x-ng-click="calTotalAmtPaid()">Calculate</button>
+                  <button type="button" class="btn btn-primary" x-ng-disabled="isSaved || !enableCalculate || (receipt.totalAmtPaid | isEmpty)" x-ng-click="calTotalAmtPaid()">Calculate</button>
              </div>
 		</div>
 				<table class="table table-striped table-bordered table-list">
@@ -166,7 +169,7 @@
 				</div>
                 <div class="row" style="margin-bottom: 30px;margin-top: 20px;">
                   <div class="col col-md-4 text-right">
-                  	<button type="button" class="btn btn-primary" x-ng-disabled="isSaved" x-ng-click="saveReceipt()">Save</button>
+                  	<button type="button" class="btn btn-primary" x-ng-disabled="isSaved || isSaveDisabled" x-ng-click="saveReceipt()">Save</button>
                   </div>
                   <div class="col col-md-4 text-center">
                     <button class="btn btn-success" x-ng-disabled="!isSaved" x-ng-click="downloadReceipt()">Download</button>
