@@ -52,3 +52,6 @@ body {
   left: initial;
   font-size: 14px;
 }
+.ngdialog.ngdialog-custom .ngdialog-content {
+  height: 700px;
+}
