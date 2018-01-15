@@ -1,13 +1,9 @@
  
-app.controller('OrderController', ['$scope','deliveryNoteService','$http','$window',function($scope,deliveryNoteService,$http,$window) {
+app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService','$http','popUpService','productService','$window','orderService',function($scope,NgTableParams,deliveryNoteService,$http,popUpService,productService,$window,orderService) {
 	$scope.heading='Order';
 	$scope.isRowAdded=false;
 	$scope.isSaved=false;
 	$scope.simple=false;
-	$scope.createMode=true;
-	$scope.viewMode=false;
-	$scope.editMode=false;
-	$scope.isSearch=false;
 	$scope.isUpdate=false;
 	$scope.isNewNote=false;
 	$scope.stateGSTType='I/SGST';
@@ -30,20 +26,32 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 	$scope.notes=[];
 	$scope.counter=0;
 	
+	$scope.modes={
+			add : false,
+			view : true
+	};
+	$scope.changeMode=function(activeMode)
+	{
+		angular.forEach($scope.modes,function(value,mode)
+		{
+			$scope.modes[mode] = mode==activeMode?true:false;
+		})
+		
+		if($scope.modes.add)
+		{
+			$scope.generateDeliveryNoteID();
+		}
+		
+	}
 	
 	//This service gets all the products
-	deliveryNoteService.getObject('product').then(function successCallback(response) 
-	{
-		$scope.products=response.data;
-	});
+	$scope.products=productService.query();
 	
 	//This service gets the Customer ID and Customer Name
 	deliveryNoteService.getObject('customer').then(function successCallback(response) 
 	{
 		$scope.customers=response.data;
 	});
-	
-	
 	
 	$scope.generateDeliveryNoteID=function()
 	{
@@ -59,24 +67,13 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		});
 	}
 	
-	$scope.generateDeliveryNoteID();
-	
 	$scope.loadProductByID=function(index)
 	{
-		var _note;
-		if($scope.editMode)
-		{
-			_note=$scope.orderNotes[index];
-		}
-		else
-		{
-			_note=$scope.notes[index];
-		}
+		var _note=$scope.notes[index];
 		_note.isProductSelected=true;
 		angular.forEach($scope.products,function(value,key){
 			if(value.productID==_note.productID)
 				{
-					console.log('In Product ID');
 					_note.rate=value.rate;
 					_note.productDescription=value.productDescription;
 					_note.cgst=value.gst/2;
@@ -84,6 +81,67 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 					console.log(_note.productDescription);
 				}
 		});
+	};
+	$scope.loadEditedProductByID=function(index)
+	{
+		var _note=$scope.orderNotes[index];
+		_note.isProductSelected=true;
+		angular.forEach($scope.products,function(value,key){
+			if(value.productID==_note.productID)
+				{
+					_note.rate=value.rate;
+					_note.productDescription=value.productDescription;
+					_note.cgst=value.gst/2;
+					_note.sgst=value.gst/2;
+					console.log(_note.productDescription);
+				}
+		});
+		var present=_.findWhere($scope.orginalOrderNotes, {productID:_note.productID});
+		if(!present)
+		{
+			$scope.orginalOrderNotes.push(_note);
+		}
+		reloadOrderNote($scope.orderNotes);
+	};
+	
+
+	$scope.loadProductByDesc=function(index)
+	{
+		var _note=$scope.notes[index];
+		_note.isProductSelected=true;
+		angular.forEach($scope.products,function(value,key){
+			if(value.productDescription==_note.productDescription)
+				{
+					_note.rate=value.rate;
+					_note.productID=value.productID;
+					_note.cgst=value.gst/2;
+					_note.sgst=value.gst/2;
+				}
+		});
+		reloadOrderNote($scope.orderNotes);
+	};
+	
+
+	$scope.loadEditedProductByDesc=function(index)
+	{
+		var _note=$scope.orderNotes[index];
+		
+		_note.isProductSelected=true;
+		angular.forEach($scope.products,function(value,key){
+			if(value.productDescription==_note.productDescription)
+				{
+					_note.rate=value.rate;
+					_note.productID=value.productID;
+					_note.cgst=value.gst/2;
+					_note.sgst=value.gst/2;
+				}
+		});
+		var present=_.findWhere($scope.orginalOrderNotes, {productID:_note.productID});
+		if(!present)
+		{
+			$scope.orginalOrderNotes.push(_note);
+		}
+		reloadOrderNote($scope.orderNotes);
 	};
 	
 	$scope.loadCustomerName=function()
@@ -120,30 +178,6 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		});
 	};
 	
-	$scope.loadProductByDesc=function(index)
-	{
-		var _note;
-		if($scope.editMode)
-		{
-			_note=$scope.orderNotes[index];
-			
-		}
-		else
-		{
-			_note=$scope.notes[index];
-		}
-		_note.isProductSelected=true;
-		angular.forEach($scope.products,function(value,key){
-			if(value.productDescription==_note.productDescription)
-				{
-					_note.rate=value.rate;
-					_note.productID=value.productID;
-					_note.cgst=value.gst/2;
-					_note.sgst=value.gst/2;
-				}
-		});
-	};
-	
 	$scope.setUpdatableNotes=function(_note)
 	{
 		var present=false;
@@ -157,21 +191,12 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		{
 			$scope.updatedOrderNotes.push(_note);
 		}
-		console.log('updatedOrderNotes ==> '+$scope.updatedOrderNotes);
 	}
 	
 	$scope.calculateTotal=function(index)
 	{
-		if($scope.editMode)
-		{
-			var _note=$scope.orderNotes[index];
-			$scope.setUpdatableNotes(_note);
-			$scope.isUpdate=true;
-		}
-		else
-		{
-			var _note=$scope.notes[index];
-		}
+		
+		var _note=$scope.notes[index];
 		_note.total=_note.quantity*_note.rate;
 		_note.netTotal=_note.total-(_note.total*_note.discount)/100;
 		_note.cgstAmount=(_note.netTotal*_note.cgst)/100;
@@ -186,19 +211,28 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 			$scope.calGrandTotal(_note.deliveryNoteID,_note.netPrice);
 		}
 	}
-	
-	$scope.calculateNetTotal=function(index)
+	$scope.editTotal=function(index)
 	{
-		if($scope.editMode)
+		var _note=$scope.orderNotes[index];
+		
+		_note.total=_note.quantity * _note.rate;
+		_note.netTotal=_note.total-(_note.total*_note.discount)/100;
+		_note.cgstAmount=(_note.netTotal*_note.cgst)/100;
+		_note.sgstAmount=(_note.netTotal*_note.sgst)/100;
+		_note.netPrice=_note.netTotal + _note.cgstAmount + _note.sgstAmount;
+		if($scope.simple)
 		{
-			var _note=$scope.orderNotes[index];
-			$scope.setUpdatableNotes(_note);
-			$scope.isUpdate=true;
+			editGrandTotal(_note.deliveryNoteID,_note.netTotal);
 		}
 		else
 		{
-			var _note=$scope.notes[index];
+			editGrandTotal(_note.deliveryNoteID,_note.netPrice);
 		}
+	}
+	
+	$scope.calculateNetTotal=function(index)
+	{
+		var _note=$scope.notes[index];
 		_note.netTotal=_note.total-(_note.total*_note.discount)/100;
 		_note.cgstAmount=(_note.netTotal*_note.cgst)/100;
 		_note.sgstAmount=(_note.netTotal*_note.sgst)/100;
@@ -214,94 +248,84 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		
 		
 	};
-	
+	$scope.editNetTotal=function(index)
+	{
+		var _note=$scope.orderNotes[index];
+		$scope.isUpdate=true;
+		
+		_note.netTotal=_note.total-(_note.total*_note.discount)/100;
+		_note.cgstAmount=(_note.netTotal*_note.cgst)/100;
+		_note.sgstAmount=(_note.netTotal*_note.sgst)/100;
+		_note.netPrice=_note.netTotal+_note.cgstAmount+_note.sgstAmount;
+		if($scope.simple)
+		{
+			editGrandTotal(_note.deliveryNoteID,_note.netTotal);
+		}
+		else
+		{
+			editGrandTotal(_note.deliveryNoteID,_note.netPrice);
+		}		
+	};
 	$scope.calGrandTotal=function(orderId,netPrice,isDelete)
 	{
-		if($scope.editMode)
+			$scope.deliveryNotes.grandTotal=0;
+			if($scope.simple)
 			{
-				angular.forEach($scope.orders,function(order,key){
-					if(order.deliveryNoteID == orderId)
-						{
-						if(isDelete)
-						{
-							order.grandTotal = order.grandTotal - netPrice;
-						}
-						else
-						{
-							order.grandTotal=0;
-							angular.forEach($scope.orderNotes,function(value,key){
-								if($scope.simple)
-								{
-									order.grandTotal += value.netTotal;
-								}
-								else
-								{
-									order.grandTotal += value.netPrice;
-								}
-							});
-						}
-							
-							var present=false;
-							angular.forEach($scope.updatedOrders,function(updatedOrder,key){
-								if(order == updatedOrder)
-									{
-										present=true;
-									}
-							});
-							if(!present)
-							{
-								$scope.updatedOrders.push(order);
-							}
-						}
+				angular.forEach($scope.notes,function(value,key){
+					$scope.deliveryNotes.grandTotal = $scope.deliveryNotes.grandTotal + value.netTotal;
 				});
-				
 			}
-		else
+			else
 			{
-				$scope.deliveryNotes.grandTotal=0;
-				if($scope.simple)
-					{
-					angular.forEach($scope.notes,function(value,key){
-						$scope.deliveryNotes.grandTotal = $scope.deliveryNotes.grandTotal + value.netTotal;
-					});
-					}
-				else
-					{
-					angular.forEach($scope.notes,function(value,key){
-						$scope.deliveryNotes.grandTotal = $scope.deliveryNotes.grandTotal + value.netPrice;
-					});
-					}
+				angular.forEach($scope.notes,function(value,key){
+					$scope.deliveryNotes.grandTotal = $scope.deliveryNotes.grandTotal + value.netPrice;
+				});
 			}
-		console.log('updatedOrders ==> '+$scope.updatedOrders);
 	}
-	$scope.changeMode=function(mode)
+	var editGrandTotal=function(orderId,netPrice,isDelete)
 	{
-		if(mode=='create')
+			angular.forEach($scope.orders,function(order,key)
+			{
+				if(order.deliveryNoteID == orderId)
+				{
+					if(isDelete)
+					{
+						order.grandTotal = order.grandTotal - netPrice;
+					}
+					else
+					{
+						order.grandTotal=0;
+						angular.forEach($scope.orderNotes,function(value,key)
+						{
+							if($scope.simple)
+							{
+								order.grandTotal += value.netTotal;
+							}
+							else
+							{
+								order.grandTotal += value.netPrice;
+							}
+						});
+					}
+					
+				}
+			});
+			reloadOrderNote($scope.orderNotes);			
+	}
+	var setupdatableOrders=function()
+	{
+		var present=_.findWhere($scope.updatedOrders, {deliveryNoteID:$scope.relatedOrder.deliveryNoteID});
+		if(!present)
 		{
-			$scope.createMode=true;
-			$scope.viewMode=false;
-			$scope.editMode=false;
-		}
-		else if(mode=='view')
-		{
-			$scope.createMode=false;
-			$scope.viewMode=true;
-			$scope.editMode=false;
-		}
-		else if(mode=='edit')
-		{
-			$scope.createMode=false;
-			$scope.viewMode=true;
-			$scope.editMode=true;
+			$scope.updatedOrders.push($scope.relatedOrder);
+			reloadOrder($scope.orders);
 		}
 	}
 	$scope.addNewNote=function()
 	{
 		
 		$scope.isRowAdded=true;
-		$scope.counter++;
 		$scope.note={
-				sno:$scope.counter,
 				productID:'',
 				productDescription:'',
 				notation:'',
@@ -317,31 +341,39 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 				netPrice:0,
 				isProductSelected: false
 		};
-		if($scope.editMode)
-		{
-			var order=$scope.orderNotes[0];
-			$scope.note.isNewNote=true;
-			$scope.note.sno=$scope.orderNotes.length+1;
-			$scope.note.deliveryNoteID=order.deliveryNoteID;
-			$scope.orderNotes.push($scope.note);
-			$scope.newNotes.push($scope.note);
-			$scope.isUpdate=true;
-		}
-		else
-		{
-			$scope.notes.push($scope.note);
-			$scope.deliveryNotes.notes=$scope.notes;
-		}
-		resetSno();
+		
+		$scope.notes.push($scope.note);
+		$scope.deliveryNotes.notes=$scope.notes;
+	}
+	$scope.addNewEditNote=function()
+	{
+		$scope.note={
+				productID:'',
+				productDescription:'',
+				notation:'',
+				quantity:0,
+				rate:0,
+				total:0,
+				netTotal:0,
+				discount:0,
+				cgst:0,
+				cgstAmount:0,
+				sgst:0,
+				sgstAmount:0,
+				netPrice:0,
+				isProductSelected: false,
+				isEditing: true,
+		};
+		
+		var order=$scope.orderNotes[0];
+		$scope.note.deliveryNoteID=order.deliveryNoteID;
+		
+		$scope.orderNotes.push($scope.note);
+		$scope.newNotes.push($scope.note);
+		$scope.isUpdate=true;
+		reloadOrderNote($scope.orderNotes);
 	}
 	
-	var resetSno=function()
-	{
-		var counter=0;
-		angular.forEach($scope.notes,function(note,key){
-			note.sno=++counter;
-		});
-	}
 	$scope.deleteNote=function(index)
 	{
 		$scope.notes.splice(index, 1);
@@ -352,21 +384,20 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 				$scope.deliveryNotes.grandTotal=0;
 			}
 		$scope.calGrandTotal();
-		resetSno();
 	}
-	$scope.fetchOrders=function()
+	var resetAll=function()
 	{
 		$scope.newNotes=[];
-		$scope.deletedOrders=[];
 		$scope.updatedOrders=[];
 		$scope.deletedOrderNotes=[];
 		$scope.updatedOrderNotes=[];
+	}
+	$scope.fetchOrders=function()
+	{
 		
-		$scope.isSearch=true;
-		$scope.isView=false;
 		if(($scope.deliveryNotes.fromDate || $scope.deliveryNotes.toDate) && (!$scope.deliveryNotes.fromDate || !$scope.deliveryNotes.toDate))
 		{
-			$window.alert('Please select proper range(from-to)!');
+			popUpService.openInfoBox('Please select proper range(from-to)!',$scope);
 		}
 		else
 		{
@@ -376,66 +407,46 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 				$scope.orders=response.data;
 				if($scope.orders.length==0)
 				{
-					$window.alert('No Record Found!');
+					popUpService.openInfoBox('No Record Found!',$scope);
 				}
 				else
 				{
-					var count=0;
-					angular.forEach($scope.orders,function(value,key){
-						value.sno=++count;
-					});
+					$scope.orderTable = new NgTableParams({}, { dataset: $scope.orders});
+					$scope.isSearch=true;
 				}
 				
 			},function failureCallback(response){
-				$window.alert('Server Error!');
+				popUpService.openInfoBox('Server Error!',$scope);
 			});
 			
-			
-			/*var fetchCriteria={
-					customerID: $scope.deliveryNotes.customerID,
-					fromDate: $scope.deliveryNotes.fromDate,
-					toDate: $scope.deliveryNotes.toDate,
-					simple: $scope.simple
-			};
-			deliveryNoteService.getObject('order/fetch',fetchCriteria)
-			.then(function successCallback(response) 
-			{
-				$scope.orders=response.data;
-				if($scope.orders.length==0)
-				{
-					$window.alert('No Record Found!');
-				}
-				else
-				{
-					var count=0;
-					angular.forEach($scope.orders,function(value,key){
-						value.sno=++count;
-					});
-				}
-				
-			},function failureCallback(response){
-				$window.alert('Server Error!');
-			});*/
 		}
-		
-		
 	}
-	$scope.DeleteOrder=function(index)
+	$scope.CancelOrder=function(order)
 	{
-		var order=$scope.orders[index];
-		$scope.deletedOrders.push(order.deliveryNoteID);
-		$scope.orders.splice(index, 1);
-		$scope.orderNotes=[];
-		$scope.isUpdate=true;
+		popUpService.openConfirmBox('order',$scope).then(function (success) 
+		{
+			orderService.remove({_simple:$scope.simple,_Id: order.deliveryNoteID},function()
+			{
+				_.remove($scope.orders, function(item) {
+			        return order === item;
+			      });
+				reloadOrder($scope.orders);
+				popUpService.openInfoBox('Order Deleted Successfully!',$scope);
+			},
+			function()
+			{
+				popUpService.openInfoBox('Server Error!',$scope);
+			});
+		}, function (failure){
+			//do nothing
+		});
 	}
 	
-	$scope.DeleteOrderNote=function(index)
+	var DeleteOrderNote=function(note)
 	{
-		var count=0;
-		var note=$scope.orderNotes[index];		
 		if($scope.orderNotes.length==1)
 		{
-			$window.alert('If you wish to delete the order, Please use delete button!');
+			popUpService.openInfoBox('If you wish to delete the order, Please use delete button at order level!',$scope);
 		}
 		else
 		{
@@ -452,18 +463,16 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 			else
 			{
 				$scope.deletedOrderNotes.push(note.objid);
-				$scope.orderNotes.splice(index, 1);
-				angular.forEach($scope.orderNotes,function(value,key){
-					value.sno = ++count;
-				});
-				
+				_.remove($scope.orderNotes, function(item) {
+			        return note === item;
+			      });
 				if($scope.simple)
 				{
-					$scope.calGrandTotal(note.deliveryNoteID,note.netTotal,true);
+					editGrandTotal(note.deliveryNoteID,note.netTotal,true);
 				}
 				else
 				{
-					$scope.calGrandTotal(note.deliveryNoteID,note.netPrice,true);
+					editGrandTotal(note.deliveryNoteID,note.netPrice,true);
 				}
 			}
 		}
@@ -476,42 +485,43 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 		var request={};
 		request.strSimple=$scope.simple;
 		request.newNotes=$scope.newNotes;
-		request.deletedOrders=$scope.deletedOrders;
 		request.updatedOrders=$scope.updatedOrders;
 		request.deletedOrderNotes=$scope.deletedOrderNotes;
 		request.updatedOrderNotes=$scope.updatedOrderNotes;
 		
 		deliveryNoteService.submit('order',request).then(function successCallback(response) 
 		{
-			$scope.editMode=false;
-			$scope.viewMode=true;
-			$window.alert('Order successfully updated!');
-		},function failureCallback(response){
-			$window.alert('Order failed to update!');
+			resetAll();
+			$scope.fetchOrders();
+			popUpService.openInfoBox('Order successfully updated!',$scope);
+		},
+		function failureCallback(response)
+		{
+			popUpService.openInfoBox('Order failed to update!',$scope);
 		});
 	}
 	$scope.fetchOrderNote=function(index)
 	{
-		$scope.isView=true;
 		var order=$scope.orders[index];
 		var orderId=order.deliveryNoteID;
 		var invoiceGenerated=order.invoiceGenerated;
 		deliveryNoteService.getObject('order/notes',orderId,$scope.simple)
 		.then(function successCallback(response) 
 		{
-			console.log('success'+response.data);
 			$scope.orderNotes=response.data;
-			var count=0;
+			$scope.orginalOrderNotes=angular.copy($scope.orderNotes);
 			angular.forEach($scope.orderNotes,function(value,key){
-				value.sno=++count;
 				value.invoiceGenerated=invoiceGenerated;
 				value.isProductSelected=true;
+				value.isNewNote=false;
 			});
+
+			reloadOrderNote($scope.orderNotes);
 		},function failureCallback(response){
-			console.log(response.status);
-			//$scope.deliveryNotes.deliveryNoteID='Error';
+			popUpService.openInfoBox('Server Error!',$scope);
 		});
-		
+		$scope.relatedOrder=order;
+		popUpService.openEditForm($scope,'views/order/EditOrder.html',1400);
 	}
 	
 	$scope.downloadOrderNote=function(index)
@@ -537,7 +547,7 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
     	  }, function errorCallback(response) {
     	    // called asynchronously if an error occurs
     	    // or server returns response with an error status.
-    		  $window.alert('Server Error.Unable to download Order!');
+    		  popUpService.openInfoBox('Server Error.Unable to download Order!',$scope);
     	  });
 	}
 	$scope.saveDeliveryNotes=function()
@@ -554,21 +564,20 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
 	    	    // when the response is available
 	    		if(response.data==true)
 	    		{
-	    			$window.alert('Delivery Note Saved Successfully!');
-	    			//$scope.isSaved=true;
+	    			popUpService.openInfoBox('Delivery Note Saved Successfully!',$scope);
 	    			reset();
 	    		}
 	    		else
 				{
-	    			$window.alert('Unable to save Delivery Note!');
+	    			popUpService.openInfoBox('Unable to save Delivery Note!',$scope);
 				}
 	    	  }, function errorCallback(response) {
-	    		  $window.alert('Server Error!');
+	    		  popUpService.openInfoBox('Server Error!',$scope);
 	    	  });
 		}
 		else
 		{
-			$window.alert('Please select customer before saving Order!');
+			popUpService.openInfoBox('Please select customer before saving Order!',$scope);
 		}
 		
 	}
@@ -610,7 +619,58 @@ app.controller('OrderController', ['$scope','deliveryNoteService','$http','$wind
             var pdfUrl = URL.createObjectURL(pdfFile);
             $window.open(pdfUrl);
     	}, function errorCallback(response) {
-    		$window.alert('Server Error!');
+    		popUpService.openInfoBox('Server Error!',$scope);
     	  });
 	}
+	
+	
+	$scope.cancel=function(row, rowForm) 
+	{
+	      var originalRow = resetRow(row, rowForm);
+	      
+	      angular.extend(row, originalRow);
+    }
+
+	$scope.del=function(row) 
+	{
+			DeleteOrderNote(row);
+	      _.remove($scope.orderNoteTable.settings().dataset, function(item) {
+	        return row === item;
+	      });
+	      $scope.orderNoteTable.reload().then(function(data) {
+		        if (data.length === 0 && $scope.orderNoteTable.total() > 0) {
+		        	$scope.orderNoteTable.page($scope.orderNoteTable.page() - 1);
+		        	$scope.orderNoteTable.reload();
+		        }
+		      });
+    }
+	var reloadOrderNote=function(data)
+	{
+		$scope.orderNoteTable = new NgTableParams({}, {
+		      filterDelay: 0,
+		      dataset: data
+		    });
+	}
+	var reloadOrder=function(data)
+	{
+		$scope.orderTable = new NgTableParams({}, {
+		      filterDelay: 0,
+		      dataset: data
+		    });
+	}
+	var resetRow=function(row, rowForm)
+	{
+	      row.isEditing = false;
+	      rowForm.$setPristine();
+	      //$scope.orderNoteTable.untrack(row);
+	      return _.findWhere($scope.orginalOrderNotes, {productID:row.productID});
+    }
+
+	$scope.save=function(row, rowForm) 
+	{
+		  $scope.setUpdatableNotes(row);
+		  setupdatableOrders();
+	      var originalRow = resetRow(row, rowForm);
+	      angular.extend(originalRow, row);
+    }
 }]);

@@ -1,4 +1,4 @@
-<div style="margin-top:50px; margin-bottom: 10px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+<div style="margin-top:5px; margin-bottom: 10px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="panel-title">Add Product</div>
@@ -39,24 +39,25 @@
                         <div class="form-group required" style="margin-right: 30px">
                              <label for="id_password2" class="control-label col-md-4  requiredField"> HSN Number<span class="asteriskField">*</span> </label>
                              <div class="controls col-md-8 ">
-                                <input class="input-md textinput textInput form-control" x-ng-model="product.otherProductCode" name="hsnNumber" placeholder=" HSN Number" style="margin-bottom: 10px" type="text" required/>
+                                <input class="input-md textinput textInput form-control" x-ng-model="product.otherProductCode" name="hsnNumber" placeholder="Enter HSN Number" style="margin-bottom: 10px" type="text" required/>
                             </div>
                         </div>
                         
                         <div class="form-group required" style="margin-right: 30px"> 
-                            <label for="id_name" class="control-label col-md-4  requiredField"> GST %<span class="asteriskField">*</span> </label> 
-                            <div class="controls col-md-8 "> 
-                                <input class="input-md textinput textInput form-control" x-ng-model="product.gst" name="gst" placeholder="Enter GST" style="margin-bottom: 10px" type="Number" required/>
-                            </div>
+                            <label class="control-label col-md-4  requiredField"> GST<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8" style="margin-bottom: 10px">
+                            	<div class="input-group">
+                                	<input class="form-control" x-ng-model="product.gst" name="gst" placeholder="Enter GST" type="Number" required/>
+                            		<span class="input-group-addon">%</span> 
+                            	</div>
+                            </div> 
+                            
                         </div>
                         
                         <div class="form-group" style="margin-right: 30px"> <!-- State Button -->
-                            <label for="state_id" class="control-label col-md-4">Status<span class="asteriskField">*</span></label>
+                            <label for="state_id" class="control-label col-md-4">Status</label>
                             <div class="controls col-md-8 " style="margin-bottom: 10px">
-                                <select x-ng-model="product.status" class="form-control" required>
-                                <option value="A">Active</option>
-                                <option value="I">Inactive</option>
-                            </select>
+                                <select x-ng-model="product.status" class="form-control" x-ng-options="status for status in productStatus"></select>
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 30px">
@@ -73,7 +74,7 @@
                             </div>						    
                         </div>
                         
-                        <div class="col-md-offset-5 controls" class="btn-group" style="margin-bottom: 30px">
+                        <div class="col-md-offset-6 controls" class="btn-group" style="margin-bottom: 30px">
                             	<button x-ng-disabled="productform.$invalid" class="btn btn-primary" x-ng-click="addProduct(product)">Add Product</button>
                         </div>
                             

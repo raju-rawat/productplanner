@@ -1,5 +1,5 @@
 
-var app = angular.module('productPlannerApp', ['ngRoute','ngResource','ngLoadingSpinner','ngAnimate', 'ui.bootstrap']);
+var app = angular.module('productPlannerApp', ['ngRoute','ngResource','ngLoadingSpinner','ngAnimate', 'ui.bootstrap','ngDialog','ngTable']);
 
 app.config(function($routeProvider){
     $routeProvider
@@ -18,7 +18,7 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/Product.html',
+            templateUrl: '/views/product/Product.html',
             controller: 'productController'
         })
         .when('/user',{
@@ -31,7 +31,7 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/User.html',
+            templateUrl: '/views/user/User.html',
             controller: 'userController'
         })
         .when('/deliveryNote',{
@@ -44,7 +44,7 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/DeliveryNoteGeneration.html',
+            templateUrl: '/views/order/Order.html',
             controller: 'OrderController'
         })
         .when('/customer',{
@@ -57,7 +57,7 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/Customer.html',
+            templateUrl: '/views/customer/Customer.html',
             controller: 'customerController'
         })
         .when('/owner',{
@@ -119,5 +119,6 @@ app.config(function($routeProvider){
         .otherwise(
             { redirectTo: '/'}
         );
-
+    
+    //$locationProvider.html5Mode(true);
 });

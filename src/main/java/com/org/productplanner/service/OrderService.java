@@ -1,9 +1,6 @@
 package com.org.productplanner.service;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +9,16 @@ import static com.org.productplanner.queries.Query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.productplanner.beans.DeliveryNote;
 import com.org.productplanner.beans.Notes;
+import com.org.productplanner.repository.OrderRepository;
 import com.org.productplanner.rowmappers.DeliveryNoteRowMapper;
 import com.org.productplanner.rowmappers.NotesRowMapper;
 import com.org.productplanner.rowmappers.SimpleNotesRowMapper;
 
-import net.sf.jasperreports.engine.JRException;
 
 @Service
 public class OrderService extends CommonService{
@@ -30,6 +28,9 @@ public class OrderService extends CommonService{
 	
 	@Autowired
 	ObjectMapper objectMapper;
+	
+	@Autowired
+	OrderRepository orderRepository;
 	
 	public Map<String,String> generateDeliveryNoteID(Date orderDate,boolean simple)
     {
@@ -44,27 +45,21 @@ public class OrderService extends CommonService{
     }
 	
 	public boolean download(HttpServletResponse response,DeliveryNote deliveryNote,boolean simple)
-    {
-		  try
-		  {
-			  System.out.println(deliveryNote.toString());
-			  generatePDF(deliveryNote, response,simple);
-			  
-		  } 
-		  catch (SQLException e)
-		  {
-		     e.printStackTrace();
-		     
-		  } 
-		  catch (IOException ioe) {
-			System.out.println("IOException in download Delivery Note ==> "+ioe);
-		} catch (JRException jre) {
-			System.out.println("JRException in download Delivery Note ==> "+jre);
-		}
-		  
-		  return true;
-    }
-    
+	{
+		try
+		{
+			System.out.println(deliveryNote.toString());
+			generatePDF(deliveryNote, response,simple);
+		} 
+		catch (Exception ex)
+		{
+			System.out.println("IOException in download Delivery Note ==> "+ex);
+			ex.printStackTrace();
+		} 
+
+		return true;
+	}
+	@Transactional
     public boolean save(DeliveryNote deliveryNote,boolean simple)
     {
     	System.out.println(deliveryNote.toString());
@@ -123,7 +118,7 @@ public class OrderService extends CommonService{
 	
 	return output==1?true:false;
     }
-    
+    @Transactional
     public void addNotes(List<Notes> listOfNotes,boolean simple)
     {
     	System.out.println("Adding notes in OrderId ...");
@@ -221,7 +216,7 @@ public class OrderService extends CommonService{
     	
     	
     	/**
-    	 * Updating Orders with grand tatol
+    	 * Updating Orders with grand total
     	 */
     	List<DeliveryNote> listOforders=(List<DeliveryNote>) orderMap.get("updatedOrders");
     	if(listOforders!=null)
@@ -236,14 +231,6 @@ public class OrderService extends CommonService{
 		{
         	addNotes(listOfNotes, simple);
 		}
-    	/**
-    	 * Deleting Orders and related Notes
-    	 */
-    	List<String> listOfOrderId=(List<String>) orderMap.get("deletedOrders");
-    	if(listOfOrderId!=null)
-    	{
-    		deleteOrder(listOfOrderId, simple);
-    	}
     	
     	/**
     	 * Removing Notes from existing Orders
@@ -264,7 +251,7 @@ public class OrderService extends CommonService{
     	}
     	
     }
-    
+    @Transactional
     public void updateOrder(List<DeliveryNote> listOfOrders,boolean simple)
     {
 		System.out.println("Updating Order ...");
@@ -276,7 +263,7 @@ public class OrderService extends CommonService{
     	
     	System.out.println("Order Updated.");
     }
-    
+    @Transactional
     private void deleteNotes(List<Integer> listOfNotes, boolean simple) 
     {
     	System.out.println("Deleting Notes ...");
@@ -286,7 +273,7 @@ public class OrderService extends CommonService{
 		}
     	System.out.println("Deleted Notes.");
 	}
-    
+    @Transactional
     public void updateNotes(List<Notes> notes,boolean simple)
     {
     	System.out.println("Updating Note in existing Order ...");
@@ -329,17 +316,12 @@ public class OrderService extends CommonService{
     	}
     	System.out.println("Updated Notes.");
     }
-    
-    public void deleteOrder(List<String> listOfOrders,boolean simple)
+    @Transactional
+    public void delete(boolean simple, String id)
     {
     	System.out.println("Deleting Orders ...");
-    	String deleteNote=simple?DELETE_X_NOTE:DELETE_NOTE;
-    	String deleteDeliveryNote=simple?CANCEL_X_DELIVERY_NOTE:CANCEL_DELIVERY_NOTE;
-    	for(String orderId: listOfOrders)
-    	{
-    		jdbcTemplate.update(deleteNote, orderId);
-    		jdbcTemplate.update(deleteDeliveryNote, orderId);
-    	}
+    	orderRepository.deleteOrderNotes(simple?DELETE_X_NOTE:DELETE_NOTE,id);
+    	orderRepository.cancelOrder(simple?CANCEL_X_DELIVERY_NOTE:CANCEL_DELIVERY_NOTE,id);
     	System.out.println("Orders Deleted.");
     }
     

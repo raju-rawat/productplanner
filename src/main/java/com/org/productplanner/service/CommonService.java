@@ -89,7 +89,13 @@ public class CommonService {
     	return mapID;
     }
     
-    
+    /**
+     * This method generates unique object ID for the corresponding table passed as parameter.
+     * @select
+     *   query= SELECT IFNULL(MAX(OBJID),0)+1 FROM Table_Name 
+     * @param tableName
+     * @return next unique object ID
+     */
     public int getNEXTObjId(String tableName)
     {
     	return jdbcTemplate.queryForObject(GET_NEXT_OBJID+tableName, Integer.class);
@@ -223,5 +229,19 @@ public class CommonService {
 	    short dateFormat = createHelper.createDataFormat().getFormat("dd-MM-yyyy");
 	    cellStyle.setDataFormat(dateFormat);
 	    return cellStyle;
+	}
+    /**
+     * This method converts the status from GUI to DB compatible
+     * @param status compatible to GUI
+     * @return status compatible to DB
+     */
+    public String replaceForDB(String status)
+    {
+		return "ACTIVE".equalsIgnoreCase(status)?"A":"I";
+    }
+    
+    public String replaceForGUI(String status)
+	{
+		return "A".equalsIgnoreCase(status)?"Active":"Inactive";
 	}
 }

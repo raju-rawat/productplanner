@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.org.productplanner.beans.User;
 import com.org.productplanner.service.UserService;
 
@@ -38,9 +38,15 @@ public class UserController {
 		userService.addUser(user);		
 	}
 	
-	@RequestMapping(value="/update",method = RequestMethod.POST)
-	public @ResponseBody void UpdateUser(@RequestBody Map<String,Object> userMap)
+	@RequestMapping(method = RequestMethod.PUT)
+	public @ResponseBody void UpdateUser(@RequestBody User user)
 	{
-		userService.updateUsers(userMap);	
+		userService.update(user);	
+	}
+	
+	@RequestMapping(value="/{productID}",method = RequestMethod.DELETE)
+	public @ResponseBody void updateProducts(@PathVariable(value="productID") String productID)
+	{
+		userService.delete(productID);
 	}
 }

@@ -7,16 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.productplanner.beans.User;
 import com.org.productplanner.rowmappers.UserRowMapper;
 
 @Repository
 @Transactional
 public class UserRepository {
-
-	@Autowired
-	private ObjectMapper objectMapper;
 	
 	@Autowired
     private JdbcTemplate jdbcTemplate;
@@ -36,7 +32,7 @@ public class UserRepository {
 					user.getPassword(),
 					user.getAddress(),
 					user.getPhone(),
-					user.getStatus(),
+					"Active".equalsIgnoreCase(user.getStatus())?"A":"I",
 					user.getUserType(),
 					user.getCreateDate()
 				});
@@ -48,24 +44,20 @@ public class UserRepository {
 		return password==null?"":password;
 	}
 
-	public void delete(String listOfUserIds) {
-		jdbcTemplate.update(DELETE_USERS.replaceAll("#",listOfUserIds));
+	public void delete(String userID) {
+		jdbcTemplate.update(DELETE_USERS,userID);
 		
 	}
 
-	public void update(List<User> listOfUsers) {
-		for (Object obj : listOfUsers) {
-			User user=objectMapper.convertValue(obj, User.class);
-    		jdbcTemplate.update(UPDATE_USER, 
-    				user.getUserName(),
-    				user.getPassword(),
-    				user.getAddress(),
-    				user.getPhone(),
-    				user.getStatus(),
-    				user.getUserType(),
-    				new Date(),
-    				user.getUserID());
-		}
-		
+	public void update(User user) 
+	{
+		jdbcTemplate.update(UPDATE_USER, 
+				user.getUserName(),
+				user.getAddress(),
+				user.getPhone(),
+				user.getStatus(),
+				user.getUserType(),
+				new Date(),
+				user.getUserID());
 	}
 }

@@ -90,31 +90,11 @@ public class User {
 	}
 
 	public String getStatus() {
-		if("Active".equalsIgnoreCase(this.status))
-		{
-			return "A";
-		}
-		else if("Inactive".equalsIgnoreCase(this.status))
-		{
-			return "I";
-		}else
-		{
-			return this.status;
-		}
+		return status;
 	}
 
 	public void setStatus(String status) {
-		if("A".equalsIgnoreCase(this.status))
-		{
-			this.status = "Active";
-		}
-		else if("I".equalsIgnoreCase(this.status))
-		{
-			this.status = "Inactive";
-		}else
-		{
-			this.status=status;
-		}
+		this.status=status;
 	}
 
 	public String getUserType() {

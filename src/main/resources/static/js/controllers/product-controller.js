@@ -1,144 +1,106 @@
  
-app.controller('productController', ['$scope','$http','deliveryNoteService','$window',function($scope,$http,deliveryNoteService,$window) {
-	$scope.product={
-			effectiveDate: new Date()
-	}
+app.controller('productController', ['$scope','ngDialog','NgTableParams','productService','popUpService',function($scope,ngDialog,NgTableParams,productService,popUpService) {
+			
 	$scope.modes={
-			add : true,
-			view : false,
-			edit : false,
+			add : false,
+			view : true
 	};
 	
-	$scope.products=[];
-	$scope.deletedProducts=[];
-	$scope.updatedProducts=[];
-	
-	$scope.productStatus=['Active','InActive'];
-	
-	$scope.changeMode=function(activeMode)
-	{
-		angular.forEach($scope.modes,function(value,mode){
-			$scope.modes[mode] = mode==activeMode?true:false;
-		})
-		if($scope.modes.view || $scope.modes.edit)
-		{
-			$scope.viewProducts();
-		}
-	}
-	
+	$scope.productStatus=['Active','Inactive'];
 	
 	$scope.generateProductID=function()
 	{
-		deliveryNoteService.generateID('product')
-		.then(function successCallback(response) 
+		var _productId=productService.get({_Id:'generateId'},
+		function successCallback()
 		{
-			$scope.product.productID=response.data.productID;
-			
-		},function failureCallback(response){
-			$window.alert('Error generating Product Id!');
+			$scope.product.productID=_productId.productID;
+		},
+		function failureCallback()
+		{
+			popUpService.openInfoBox('Error generating Product Id!',$scope);
 		});
 	}
 	
-	$scope.generateProductID();
+	var productInit=function()
+	{
+		$scope.product=
+		{
+				status: 'Active',
+				effectiveDate: new Date()
+		}
+		$scope.generateProductID();
+	}
+	
+	productInit();
+	
+	$scope.changeMode=function(activeMode)
+	{
+		angular.forEach($scope.modes,function(value,mode)
+		{
+			$scope.modes[mode] = mode==activeMode?true:false;
+		})
+		
+		if($scope.modes.add)
+		{
+			$scope.generateProductID();
+		}
+		else if($scope.modes.view)
+		{
+			getProductList();
+		}
+	}
 	
 	$scope.addProduct=function(product)
 	{
-		// Simple POST request
-    	$http({
-    	  method: 'POST',
-    	  url: '/product',
-    	  data: product
-    	}).then(function successCallback(response) {
-    	    // this callback will be called asynchronously
-    	    // when the response is available
-    		if(response.data==true)
-    		{
-    			$window.alert('Product Added Successfully!');
-    			$scope.product={};
-    			$scope.generateProductID();
-    		}
-    		else
-			{
-    			$window.alert('Unable to add product!');
-			}
-    	  }, function errorCallback(response) {
-    		  $window.alert('Server Error!');
-    	  });
+		productService.save(product,function()
+		{
+			productInit();
+			popUpService.openInfoBox('Product Added Successfully!',$scope);
+		},
+		function()
+		{
+			popUpService.openInfoBox('Server Error!',$scope);
+		});
 	}
 	
-	$scope.viewProducts=function()
+	var getProductList=function()
 	{
-		//This service gets all the products
-		deliveryNoteService.getObject('product').then(function successCallback(response) 
+		var products=productService.query(function(){
+			$scope.tableParams = new NgTableParams({}, { dataset: products});
+		});
+	}
+	getProductList();
+	
+	$scope.deleteProduct=function(productID)
+	{
+		popUpService.openConfirmBox('product',$scope).then(function (success) 
 		{
-			var count=0;
-			$scope.products=response.data;
-			angular.forEach($scope.products,function(value,key){
-				value.sno=++count;
+			productService.remove({_Id: productID},function()
+			{
+				getProductList();
+				popUpService.openInfoBox('Product Deleted Successfully!',$scope);
+			},
+			function()
+			{
+				popUpService.openInfoBox('Server Error!',$scope);
 			});
+		}, function (failure){
+			//do nothing
 		});
 	}
 	
-	$scope.deleteProduct=function(index)
+	$scope.updateProduct=function(product)
 	{
-		var product=$scope.products[index];
-		$scope.deletedProducts.push(product.productID);
-		$scope.products.splice(index,1);
-		resetSno();
-	}
-	
-	$scope.updateProduct=function(index)
-	{
-		var present=false;
-		var product=$scope.products[index];
-		angular.forEach($scope.updatedProducts,function(value,key){
-			if(product == value)
-			{
-				present=true;
-			}
-		});
-		if(!present)
+		productService.update(product,function()
 		{
-			$scope.updatedProducts.push(product);
-		}
-	}
-	
-	$scope.updateProducts=function()
-	{
-		if($scope.deletedProducts.length==0 && $scope.updatedProducts.length==0)
+			popUpService.openInfoBox('Product Updated Successfully!',$scope);
+		},
+		function()
 		{
-			$window.alert('No product has been modified!');
-		}
-		else
-		{
-			var payload={
-					deletedProducts: $scope.deletedProducts,
-					updatedProducts: $scope.updatedProducts
-			};
-			// Simple POST request
-	    	$http({
-	    	  method: 'POST',
-	    	  url: '/product/update',
-	    	  data: payload
-	    	}).then(function successCallback(response) {
-	    	    // this callback will be called asynchronously
-	    	    // when the response is available
-	    		$window.alert('Product Updated Successfully!');
-	    		$scope.deletedProducts=[];
-	    		$scope.updatedProducts=[];
-	    	  }, function errorCallback(response) {
-	    		  $window.alert('Server Error!');
-	    	  });
-		}
-	}
-	
-	resetSno=function()
-	{
-		var sno=0;
-		angular.forEach($scope.products,function(product,key){
-			product.sno=++sno;
+			popUpService.openInfoBox('Server Error!',$scope);
 		});
 	}
+	
 	$scope.reset = function(productform) {
         if (productform) {
         	productform.$setPristine();
@@ -151,6 +113,8 @@ app.controller('productController', ['$scope','$http','deliveryNoteService','$wi
         	$scope.generateProductID();
         }
     };
+    
+    //Calendar logic with disabled past dates
     $scope.today = function () {
         $scope.product.effectiveDate = new Date();
     };
@@ -161,4 +125,11 @@ app.controller('productController', ['$scope','$http','deliveryNoteService','$wi
         $scope.showdp = true;
     };
     $scope.showdp = false;
+    //End
+    $scope.openEditProductForm=function(product)
+    {
+    	$scope.editProduct=product;
+    	popUpService.openEditForm($scope,'views/product/EditProducts.html',600);
+    }
+    
 }]);

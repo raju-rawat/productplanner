@@ -1,5 +1,5 @@
 body {
-    background-image: url("images/background.jpg");
+    background-image: url("images/ProductPlannerBG.jpg");
 }
 
 .search-form .form-group {
@@ -54,4 +54,76 @@ body {
 }
 .ngdialog.ngdialog-custom .ngdialog-content {
   height: 700px;
+}
+table tr th{
+  background:#337ab7;
+  color:white;
+  text-align:center;
+  vertical-align:center;
+}
+.navbar-custom {
+    background-color:#229922;
+    color:#ffffff;
+    border-radius:0;
+}
+
+.navbar-custom .navbar-nav > li > a {
+    color:#fff;
+}
+
+.navbar-custom .navbar-nav > .active > a {
+    color: #ffffff;
+    background-color:transparent;
+}
+
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus,
+.navbar-custom .navbar-nav > .active > a:hover,
+.navbar-custom .navbar-nav > .active > a:focus,
+.navbar-custom .navbar-nav > .open >a {
+    text-decoration: none;
+    background-color: #33aa33;
+}
+
+.navbar-custom .navbar-brand {
+    color:#eeeeee;
+}
+.navbar-custom .navbar-toggle {
+    background-color:#eeeeee;
+}
+.navbar-custom .icon-bar {
+    background-color:#33aa33;
+}
+
+#container{white-space:nowrap; overflow: hidden;}
+
+.table{display:block;overflow-x:scroll;}
+
+.noteTable td:last-child {
+  min-width: 90px;
+}
+
+/** Editable table
+------------------------- */
+
+.editable-table > tbody > tr > td {
+  padding: 1px
+}
+.editable-text {
+  padding-left: 1px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  display: inline-block;
+}
+.editable-table tbody > tr > td > .controls {
+  width: 100%
+}
+.editable-input {
+  padding-left: 1px;
+}
+.editable-input.input-sm {
+  height: 30px;
+  font-size: 14px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }

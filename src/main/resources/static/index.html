@@ -10,9 +10,18 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <!-- CSS Library -->
+	<link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/jqueryui.css">
+	<link rel="stylesheet" href="css/ngDialog.min.css">
+	<link rel="stylesheet" href="css/ngDialog-theme-default.min.css">
+	<link rel="stylesheet" href="css/ng-table.min.css">
+	
 </head>
 <body x-ng-controller="homeController as homeCtrl">
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#/!"><span class="glyphicon glyphicon-home"></span>&nbsp;Billing Application</a>
@@ -31,18 +40,9 @@
 		   </ul>
   </div>
 </nav>
-<!--  <div class="jumbotron jumbotron-billboard">
-  <div class="img"></div>
-  <span us-spinner="{radius:30, width:8, length: 16}"></span>
-	<div x-ng-if="!isLoggedIn" class="container">
-  		<h1 class="col-md-offset-3 controls">Billing Application</h1>
-  		<h3 class="col-md-offset-2 controls">This application is responsible for handling Delivery,Invoice and Reports</h3>
-	</div>
-	
-</div>-->
-<span us-spinner="{radius:30, width:8, length: 16}"></span>
-<div x-ng-view></div>
 
+<span data-us-spinner="{radius:30, width:8, length: 16}"></span>
+<div data-ng-view></div>
   
 <!--  <div class="navbar  navbar-inverse navbar-fixed-bottom"> 
      <div class="container">
@@ -53,19 +53,17 @@
 	 </div>
 </div>
 -->
-<!-- CSS Library -->
-<link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/jqueryui.css">
-<!-- Jquery Library -->
+
+<!-- JQUERY -->
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/jqueryui.js"></script>
 
-<!-- Bootstrap Library -->
+<!-- Lodash -->
+<script type="text/javascript" src="js/lodash.js"></script>
+<!-- BOOTSTRAP-->
 <script src="js/bootstrap.min.js"></script>
 
-<!-- AngularJS Library -->
+<!-- ANGULARJS -->
 <script src="js/angular/angular.min.js"></script>
 <script src="js/angular/angular-resource.min.js"></script>
 <script src="js/angular/angular-route.min.js"></script>
@@ -73,8 +71,9 @@
 <script src="js/angular/angular-spinner.min.js"></script>
 <script src="js/angular/angular-loading-spinner.js"></script>
 <script src="js/angular/angular-animate.min.js"></script>
-<script src="js/ui-bootstrap-tpls-2.5.0.min.js"></script>
-
+<script src="js/ngDialog.min.js"></script>
+<script src="js/datatable/ui-bootstrap-tpls-2.5.0.min.js"></script>
+<script src="js/datatable/ng-table.min.js"></script>
 
 <!-- Custom JavaScript Library -->
 <script src="js/app.js"></script>
@@ -89,5 +88,6 @@
 <script src="js/controllers/report-controller.js"></script>
 <script src="js/service.js"></script>
 <script src="js/filters.js"></script>
+ 
 </body>
 </html>

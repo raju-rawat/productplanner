@@ -1,18 +1,19 @@
-app.controller('userController', ['$scope','$http','deliveryNoteService','$window',function($scope,$http,deliveryNoteService,$window) {
-	$scope.heading='Create User';
-	
+app.controller('userController', ['$scope','NgTableParams','userService','popUpService',function($scope,NgTableParams,userService,popUpService)
+{	
 	$scope.users=[];
-	$scope.user={
-			createDate: new Date(),
-			status: 'Active',
-			userType: 'Normal'
-	};
-	$scope.deletedUsers=[];
-	$scope.updatedUsers=[];
+	
+	var userInit=function()
+	{
+		$scope.user={
+				createDate: new Date(),
+				status: 'Active',
+				userType: 'Normal'
+		};
+	}
+	userInit();
 	$scope.modes={
-			add : true,
-			view : false,
-			edit : false,
+			add : false,
+			view : true
 	};
 	
 	$scope.userStatus=['Active','Inactive'];
@@ -23,114 +24,62 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
 		angular.forEach($scope.modes,function(value,mode){
 			$scope.modes[mode] = mode==activeMode?true:false;
 		})
-		if($scope.modes.view || $scope.modes.edit)
+		if($scope.modes.view)
 		{
-			$scope.viewUsers();
+			getUserList();
 		}
 	}
-	$scope.viewUsers=function()
+	getUserList=function()
 	{
-		//This service gets all the customers
-		deliveryNoteService.getObject('user').then(function successCallback(response) 
-		{
-			var count=0;
-			$scope.users=response.data;
-			angular.forEach($scope.users,function(user,key){
-				user.sno=++count;
-				if(user.status=='A')
-				{
-					user.status='Active';
-				}else if(user.status=='I')
-				{
-					user.status='Inactive';
-				}
-			});
+		var users=userService.query(function(){
+			$scope.tableParams = new NgTableParams({}, { dataset: users});
 		});
 	}
+	getUserList();
 	
-	$scope.deleteUser=function(index)
+	$scope.deleteUser=function(userID)
 	{
-		var user=$scope.users[index];
-		$scope.deletedUsers.push(user.userID);
-		$scope.users.splice(index,1);
-		resetSno();
-	}
-	
-	$scope.updateUser=function(index)
-	{
-		var present=false;
-		var user=$scope.users[index];
-		angular.forEach($scope.updatedUsers,function(value,key){
-			if(user == value)
+		popUpService.openConfirmBox('user',$scope).then(function (success) 
+		{
+			userService.remove({_Id: userID},function()
 			{
-				present=true;
-			}
-		});
-		if(!present)
-		{
-			$scope.updatedUsers.push(user);
-		}
+				getUserList();
+				popUpService.openInfoBox('User Deleted Successfully!',$scope);
+			},
+			function()
+			{
+				popUpService.openInfoBox('Server Error!',$scope);
+			});
+		}, function (failure){
+			//do nothing
+		});		
 	}
 	
-	$scope.updateUsers=function()
+	$scope.update=function(user)
 	{
-		if($scope.deletedUsers.length==0 && $scope.updatedUsers.length==0)
+		userService.update(user,function()
 		{
-			$window.alert('No user has been modified!');
-		}
-		else
+			popUpService.openInfoBox('User Updated Successfully!',$scope);
+		},
+		function()
 		{
-			var payload={
-					deletedUsers: $scope.deletedUsers,
-					updatedUsers: $scope.updatedUsers
-			};
-			// Simple POST request
-	    	$http({
-	    	  method: 'POST',
-	    	  url: '/user/update',
-	    	  data: payload
-	    	}).then(function successCallback(response) {
-	    	    // this callback will be called asynchronously
-	    	    // when the response is available
-	    		$window.alert('User Updated Successfully!');
-	    		$scope.deletedUsers=[];
-	    		$scope.updatedUsers=[];
-	    	  }, function errorCallback(response) {
-	    		  $window.alert('Server Error!');
-	    	  });
-		}
-		
-	}
-	
-	resetSno=function()
-	{
-		var sno=0;
-		angular.forEach($scope.users,function(user,key){
-			user.sno=++sno;
+			popUpService.openInfoBox('Server Error!',$scope);
 		});
 	}
-	$scope.addUser=function(user,rePassword)
+	
+	$scope.addUser=function(user)
 	{
-		if(rePassword!=user.password)
+		userService.save(user,function()
 		{
-			$scope.errorMsg='Password Mismatch!';
-		}
-		else
+			userInit();
+			popUpService.openInfoBox('User Added Successfully!',$scope);
+		},
+		function()
 		{
-			$scope.errorMsg=undefined;
-	    	$http({
-	    	  method: 'POST',
-	    	  url: '/user',
-	    	  data: user
-	    	}).then(function successCallback(response) {
-	    		$window.alert('User Created Successfully!');
-	    	  }, function errorCallback(response) {
-	    		  $window.alert('Server Error!');
-	    	  });
-		}
-		
-		
+			popUpService.openInfoBox('Server Error!',$scope);
+		});
 	}
+	
 	$scope.reset = function(userform) {
         if (userform) {
         	userform.$setPristine();
@@ -142,6 +91,10 @@ app.controller('userController', ['$scope','$http','deliveryNoteService','$windo
         }
     };
     
+    $scope.openEditUserForm=function(user){
+    	$scope.editUser=user;
+    	popUpService.openEditForm($scope,'views/user/EditUsers.html',600);
+    }
     
     $scope.today = function () {
         $scope.user.createDate = new Date();

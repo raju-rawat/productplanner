@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,27 +21,35 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 	
-	@RequestMapping(value="/generate/Id",method = RequestMethod.GET)
+	@RequestMapping(value="/{generateId}",method = RequestMethod.GET)
 	public @ResponseBody Map<String,String> generateProductId()
 	{
 		return productService.generateID("PROD_", "PRODUCT_TBL", "productID");
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody boolean add(@RequestBody Product product)
-	{
-		return productService.addProduct(product);
-		
-	}
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody List<Product> get()
 	{
 		return productService.getProducts();
 	}
 	
-	@RequestMapping(value="/update",method = RequestMethod.POST)
-	public @ResponseBody void updateProducts(@RequestBody Map<String,Object> productMap)
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody void add(@RequestBody Product product)
 	{
-		productService.update(productMap);
+		productService.addProduct(product);
+		
 	}
+	
+	@RequestMapping(method = RequestMethod.PUT)
+	public @ResponseBody void update(@RequestBody Product product)
+	{
+		productService.update(product);
+	}
+	
+	@RequestMapping(value="/{productID}",method = RequestMethod.DELETE)
+	public @ResponseBody void updateProducts(@PathVariable(value="productID") String productID)
+	{
+		productService.deleteProduct(productID);
+	}
+	
 }

@@ -15,7 +15,7 @@ public class Query {
 										   .append("GST,PRODUCT_TYPE,OTHER_PRODUCT_CODE,OTHER_PRODUCT_DETAILS,EFFECTIVE_DATE)")
 										   .append("VALUES(?,?,?,?,?,?,?,?,?,?)").toString();
 	
-	public static final String DELETE_PRODUCTS="DELETE FROM PRODUCT_TBL WHERE PROD_ID in (#) ";
+	public static final String DELETE_PRODUCT="DELETE FROM PRODUCT_TBL WHERE PROD_ID = ? ";
 	
 	public static final String UPDATE_PRODUCT="UPDATE PRODUCT_TBL SET PROD_DESC= ? ,RATE = ? ,STATUS = ?,GST= ? ,PRODUCT_TYPE = ?,OTHER_PRODUCT_CODE = ?,MODIFIED_DATE =  ? where PROD_ID = ? ";
 	
@@ -49,9 +49,9 @@ public class Query {
 	
 	public static final String GET_USERS="SELECT * FROM TABLE_USER";
 	
-	public static final String DELETE_USERS="DELETE FROM TABLE_USER WHERE USER_ID in (#)";
+	public static final String DELETE_USERS="DELETE FROM TABLE_USER WHERE USER_ID = ? ";
 	
-	public static final String UPDATE_USER = "UPDATE TABLE_USER SET USER_NAME = ?,PASSWORD = ?,ADDRESS = ?,PHONE = ?,STATUS = ?,USER_TYPE = ?,MODIFIED_DATE = ? WHERE USER_ID = ?";
+	public static final String UPDATE_USER = "UPDATE TABLE_USER SET USER_NAME = ?,ADDRESS = ?,PHONE = ?,STATUS = ?,USER_TYPE = ?,MODIFIED_DATE = ? WHERE USER_ID = ?";
 	
 	/**
 	 * Note with tax

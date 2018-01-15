@@ -97,14 +97,8 @@ public class Product {
 	}
 
 	public void setStatus(String status) {
-		if("ACTIVE".equalsIgnoreCase(status))
-		{
-			this.status = "A";
-		}
-		else
-		{
-			this.status = "I";
-		}
+		
+		this.status = status;
 	}
 
 	public float getGst() {

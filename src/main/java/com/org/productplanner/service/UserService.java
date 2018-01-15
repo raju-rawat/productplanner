@@ -30,31 +30,24 @@ public class UserService extends CommonService{
 		return password.equals(loginDetails.get("password"));//Password is case sensitive
     }
 	
-    public List<User> getAllUser()
-    {
+    public List<User> getAllUser(){
     	return userRepository.getUsers();
     }
 
     public void addUser(User user)
     {
     	user.setObjid(getNEXTObjId("TABLE_USER"));
+    	user.setStatus(replaceForDB(user.getStatus()));
     	userRepository.addUser(user);
     	
     }
 
-	@SuppressWarnings("unchecked")
-	public void updateUsers(Map<String, Object> userMap) {
-		List<String> listOfUserIds=(List<String>) userMap.get("deletedUsers");
-    	List<User> listOfUsers=(List<User>) userMap.get("updatedUsers");
-    	if(listOfUserIds!=null && !listOfUserIds.isEmpty())
-    	{
-    		userRepository.delete(formatString(listOfUserIds));
-    	}
-    	if(listOfUsers!=null && !listOfUsers.isEmpty())
-    	{
-    		userRepository.update(listOfUsers);
-    	}
-		
+	public void update(User user) {
+		user.setStatus(replaceForDB(user.getStatus()));
+		userRepository.update(user);
 	}
     
+	public void delete(String userID){
+		userRepository.delete(userID);
+	}
 }

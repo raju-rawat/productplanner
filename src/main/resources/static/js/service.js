@@ -12,6 +12,72 @@ app.factory('stateService',['$http',function($http){
 	
 }]);
 
+app.factory('productService',function($resource){
+	return $resource('/product/:_Id',{_Id: '@_Id'},
+		{
+			'update': { method:'PUT' }
+		}
+	);
+})
+
+app.factory('userService',function($resource){
+	return $resource('/user/:_Id',{_Id: '@_Id'},
+		{
+			'update': { method:'PUT' }
+		}
+	);
+})
+
+app.factory('customerService',function($resource){
+	return $resource('/customer/:_Id',{_Id: '@_Id'},
+		{
+			'update': { method:'PUT' }
+		}
+	);
+})
+
+app.factory('orderService',function($resource){
+	return $resource('/order/:_simple/:_Id',{_simple: '@_simple', _Id: '@_Id'},
+		{
+			'update': { method:'PUT' }
+		}
+	);
+})
+
+app.factory('popUpService',['ngDialog',function(ngDialog){
+	return {
+		openConfirmBox: function(message,_scope)
+		{
+			_scope.message=message;
+			return ngDialog.openConfirm({
+				template: 'views/popUp/ConfirmBox.html',
+			    scope: _scope
+			})
+		},
+		openEditForm: function(_scope,view,_width)
+		{
+			ngDialog.openConfirm(
+	    	{
+	    		template: view,
+	    		scope: _scope,  //Pass the scope object if you need to access in the template
+	    		width:_width
+	  		}).then(function(){
+	  			//success
+	  		},function (){
+	  			//failure
+	  		})
+		},
+		openInfoBox: function(message,_scope)
+		{
+			_scope.message=message;
+			ngDialog.openConfirm({
+				template: 'views/popUp/InfoBox.html',
+			    scope: _scope
+			})
+		}
+	}
+}])
+
 app.factory('deliveryNoteService',['$http',function($http){
 	return {
 		getObject: function(objectType,id,simple)
@@ -64,6 +130,21 @@ app.factory('deliveryNoteService',['$http',function($http){
 				method: 'POST',
 				url: strURl,
 				data: strData
+			})
+		},
+		update: function(strURl,strData)
+		{
+			return $http({
+				method: 'PUT',
+				url: strURl,
+				data: strData
+			})
+		},
+		deleteObject: function(strURl)
+		{
+			return $http({
+				method: 'DELETE',
+				url: strURl
 			})
 		}
 	}

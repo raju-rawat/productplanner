@@ -63,4 +63,10 @@ public class OrderController {
 	{
 		orderService.updateOrder(orderMap);
 	}
+	
+	@RequestMapping(value="/{simple}/{id}",method = RequestMethod.DELETE)
+	public @ResponseBody void delete(@PathVariable(value="simple") boolean simple, @PathVariable(value="id") String id)
+	{
+		orderService.delete(simple, id);
+	}
 }

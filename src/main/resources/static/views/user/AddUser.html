@@ -1,7 +1,7 @@
 <div style="margin-top:10px; margin-bottom: 10px; margin-right: 20px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <div class="panel-title">{{heading}}</div>
+                <div class="panel-title">Create User</div>
             </div>  
             <div class="panel-body">
                                         
@@ -25,14 +25,19 @@
                         <div class="form-group required" style="margin-right: 30px">
                             <label for="id_password1" class="control-label col-md-4  requiredField">Password<span class="asteriskField">*</span> </label>
                             <div class="controls col-md-8 "> 
-                                <input class="input-md textinput textInput form-control" x-ng-model="user.password" name="type" placeholder="Enter Password" style="margin-bottom: 10px" type="password" required/>
+                                <input class="input-md textinput textInput form-control" id="password" x-ng-model="user.password" name="password" placeholder="Enter Password" style="margin-bottom: 10px" type="password" x-ng-required/>
                             </div>
                         </div>
                         
                         <div class="form-group required" style="margin-right: 30px">
                             <label for="id_password1" class="control-label col-md-4  requiredField">Re Enter Password<span class="asteriskField">*</span> </label>
                             <div class="controls col-md-8 "> 
-                                <input class="input-md textinput textInput form-control" x-ng-model="rePassword" name="type" placeholder="Re Enter Password" style="margin-bottom: 10px" type="password" required/>
+                                <input class="form-control" pw-check='password' id="rePassword" x-ng-model="rePassword" name="rePassword" placeholder="Re Enter Password" style="margin-bottom: 10px" type="password" x-ng-required/>
+								<div class='help-block' x-ng-show='userform.$error && userform.rePassword.$dirty'>
+								  <label class="label label-danger" x-ng-show='userform.rePassword.$error.pwmatch'>
+								    Passwords don't match.
+								  </label>
+								</div>
                             </div>
                         </div>
                         
@@ -58,25 +63,18 @@
                         <div class="form-group" style="margin-right: 30px">
                             <label class="control-label col-md-4">User Type</label>
                             <div class="controls col-md-8 " style="margin-bottom: 10px">
-                                <select x-ng-model="user.userType" class="form-control">
-                                <option value="Normal">Normal</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Super Admin">Super Admin</option>
-                            </select>
+                                <select x-ng-model="user.userType" class="form-control" x-ng-options="userType for userType in userTypes"></select>
                             </div>
                         </div>
                         
                         <div class="form-group" style="margin-right: 30px">
                             <label class="control-label col-md-4">Status</label>
                             <div class="controls col-md-8 " style="margin-bottom: 10px">
-                                <select x-ng-model="user.status" class="form-control" required>
-                                	<option value="A">Active</option>
-                                	<option value="I">Inactive</option>
-                            	</select>
+                                <select x-ng-model="user.status" class="form-control" x-ng-options="status for status in userStatus"></select>
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 30px">
-                            <label class="control-label col-md-4"> Create Date<span class="asteriskField">*</span> </label>
+                            <label class="control-label col-md-4"> Create Date</label>
                             <div class="col-md-8">
                             	<div class="input-group" style="margin-bottom: 20px;">
 	                            	<input class="form-control" x-ng-disabled="true" x-ng-model="user.createDate" name="effectiveDate" type="text" uib-datepicker-popup="{{dateformat}}" min-date="mindate" is-open="showdp" />
