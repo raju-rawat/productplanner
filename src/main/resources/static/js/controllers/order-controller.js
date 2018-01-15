@@ -344,6 +344,7 @@ app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService
 		
 		$scope.notes.push($scope.note);
 		$scope.deliveryNotes.notes=$scope.notes;
+		reloadNotes($scope.notes);
 	}
 	$scope.addNewEditNote=function()
 	{
@@ -384,6 +385,7 @@ app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService
 				$scope.deliveryNotes.grandTotal=0;
 			}
 		$scope.calGrandTotal();
+		reloadNotes($scope.notes);
 	}
 	var resetAll=function()
 	{
@@ -584,7 +586,6 @@ app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService
 
 	var reset=function()
 	{
-		$scope.isSaved=false;
         $scope.deliveryNotes={
     			deliveryNoteID:'',
     			deliveryDate : new Date(),
@@ -598,6 +599,7 @@ app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService
         $scope.notes.push();
 		$scope.deliveryNotes.notes=$scope.notes;
 		$scope.generateDeliveryNoteID();
+		reloadNotes($scope.notes);
 	}
 	
 	$scope.downloadDeliveryNote=function()
@@ -644,18 +646,25 @@ app.controller('OrderController', ['$scope','NgTableParams','deliveryNoteService
 		        }
 		      });
     }
-	var reloadOrderNote=function(data)
+	var reloadNotes=function(notes)
+	{
+		$scope.noteTable = new NgTableParams({}, {
+		      filterDelay: 0,
+		      dataset: notes
+		    });
+	}
+	var reloadOrderNote=function(orderNotes)
 	{
 		$scope.orderNoteTable = new NgTableParams({}, {
 		      filterDelay: 0,
-		      dataset: data
+		      dataset: orderNotes
 		    });
 	}
-	var reloadOrder=function(data)
+	var reloadOrder=function(orders)
 	{
 		$scope.orderTable = new NgTableParams({}, {
 		      filterDelay: 0,
-		      dataset: data
+		      dataset: orders
 		    });
 	}
 	var resetRow=function(row, rowForm)

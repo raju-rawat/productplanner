@@ -89,11 +89,11 @@
                          <td data-filter="{ rate : 'number'}" data-sortable="'rate'">
                          		<div class="input-group"><input x-ng-disabled="!note.isProductSelected" x-ng-model="note.rate" x-ng-change="calculateTotal($index)" class="form-control" type="number" min="0"/></div>
                          </td>
-                         <td data-filter="{ total : 'number'}" data-sortable="'total'">{{note.total}}</td>
+                         <td data-filter="{ total : 'number'}" data-sortable="'total'">{{note.total | number : 2}}</td>
                          <td data-filter="{ discount : 'number'}" data-sortable="'discount'">
                          		<div class="input-group"><input x-ng-disabled="!note.isProductSelected" x-ng-model="note.discount" x-ng-change="calculateNetTotal($index)" class="form-control" type="text"/></div>
                          </td>
-                         <td data-filter="{ netTotal : 'number'}" data-sortable="'netTotal'">{{note.netTotal}}</td>
+                         <td data-filter="{ netTotal : 'number'}" data-sortable="'netTotal'">{{note.netTotal | number : 2}}</td>
                          
                          <td x-ng-hide="simple" data-filter="{ cgst : 'number'}" data-sortable="'cgst'">
                          		<label class="control-label col-md-12">{{note.cgst}}<span>%</span></label>
@@ -104,8 +104,8 @@
                          <td x-ng-hide="simple" data-filter="{ sgst : 'number'}" data-sortable="'sgst'">
                          		<label class="control-label col-md-12">{{note.sgst}}<span>%</span></label>
                          </td>
-                         <td x-ng-hide="simple" data-filter="{ sgstAmount : 'number'}" data-sortable="'sgstAmount'">{{note.sgstAmount}}</td>
-                         <td x-ng-hide="simple" data-filter="{ netPrice : 'number'}" data-sortable="'netPrice'"><label>{{note.netPrice}}</label></td>
+                         <td x-ng-hide="simple" data-filter="{ sgstAmount : 'number'}" data-sortable="'sgstAmount'">{{note.sgstAmount | number : 2}}</td>
+                         <td x-ng-hide="simple" data-filter="{ netPrice : 'number'}" data-sortable="'netPrice'"><label>{{note.netPrice | number : 2}}</label></td>
                          <td>
                             <button class="btn btn-danger" x-ng-click="deleteNote($index)"><span class="glyphicon glyphicon-trash"></span></button>
                          </td>
