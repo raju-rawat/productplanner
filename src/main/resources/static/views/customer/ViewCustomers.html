@@ -1,57 +1,48 @@
-<div class="col-md-12" style="margin-top:50px; margin-bottom: 80px; width: 100%;">
+<div class="col-md-12" style="margin-top:5px; margin-bottom: 80px; width: 100%;">
 <div class="panel panel-info panel-table">
-	
 	    <div class="panel-heading">
 		    <div class="row">
 	                  <div class="col col-md-12">
-	                    <h1 class="panel-title" border="2">Customers</h1>
+	                    <h1 class="panel-title" border="2"><u>Customers</u></h1>
 	                  </div>
 	         </div>
-	         <hr>
-	         <div class="row" style="margin-bottom: 10px">
-				<div class="col-md-6 text-left">
-		            <form class="search-form">
-		                <div class="form-group has-feedback">
-		            		<label class="sr-only">Search</label>
-		            		<input type="text" class="form-control" x-ng-model="searchString" placeholder="search">
-		              		<span class="glyphicon glyphicon-search form-control-feedback"></span>
-		            	</div>
-		            </form>
-        		</div>
-			</div>
-		</div><!-- Panel Heading -->
+	         
+		</div><!-- Panel Heading End-->
+		
 		<div class="panel-body">
-				<table class="table table-striped table-bordered table-list">
-	                  <thead>
-	                    <tr>
-	                        <th class="hidden-xs">S.No.</th>
-	                        <th class="text-center">Customer ID</th>
-	                        <th class="text-center">Customer Name</th>
-	                        <th class="text-center">Address</th>
-	                        <th class="text-center">Phone</th>
-	                        <th class="text-center">GST</th>
-	                        <th class="text-center">PAN Number</th>
-	                        <th class="text-center">Customer Spoc.</th>
-	                        <th class="text-center">State</th>
-	                        <th class="text-center">Start Date</th>
-	                    </tr> 
-	                  </thead>
-	                  <tbody>
-		                  <tr x-ng-repeat="cust in customers | filter : searchString">
-	                          <td class="hidden-xs">{{cust.sno}}</td>
-			                  <td><label class="control-label col-md-12">{{cust.customerID}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.customerName}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.address}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.phone}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.gst}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.panNumber}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.customerSPOC}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.state}}</label></td>
-	                          <td><label class="control-label col-md-12">{{cust.startDate}}</label></td>
-	                      </tr>
-                     </tbody>
-                </table>
-		</div>
-	    </div><!-- Panel -->
+			<table data-ng-table="tableCustomer" class="table table-condensed table-bordered table-striped" data-show-filter="true">
+					<colgroup>
+			          <col width="2%" />
+			          <col width="15%" />
+			          <col width="25%" />
+			          <col width="25%" />
+			          <col width="2%" />
+			          <col width="2%" />
+			          <col width="2%" />
+			          <col width="2%" />
+			          <col width="15%" />
+			          <col width="15%" />
+			        </colgroup>
+	                  <tr x-ng-repeat="customer in $data">
+	                  	  <td title="'S. No.'" class="text-center">{{$index+1}}</td>
+                          <td title="'Customer ID'" class="text-center" data-filter="{ customerID : 'text'}" data-sortable="'customerID'">{{customer.customerID}}</td>
+                          <td title="'Customer Name'" class="text-center" data-filter="{ customerName : 'text'}" data-sortable="'customerName'">{{customer.customerName}}</td>
+                          <td title="'Address'" class="text-center" data-filter="{ address : 'text'}" data-sortable="'address'">{{customer.address}}</td>
+                          <td title="'Phone'" class="text-center" data-filter="{ phone : 'number'}" data-sortable="'phone'">{{customer.phone}}</td>
+                          <td title="'GSTIN'" class="text-center" data-filter="{ gst : 'number'}" data-sortable="'gst'">{{customer.gst}}</td>
+                          <td title="'PAN Number'" class="text-center" data-filter="{ panNumber : 'text'}" data-sortable="'panNumber'">{{customer.panNumber}}</td>
+                          <td title="'Customer Spoc.'" class="text-center" data-filter="{ customerSPOC : 'text'}" data-sortable="'customerSPOC'">{{customer.customerSPOC}}</td>
+                          <td title="'State'" class="text-center" data-filter="{ state : 'text'}" data-sortable="'state'">{{customer.state}}</td>
+                          <td title="'Start Date'" class="text-center" data-filter="{ startDate : 'text'}" data-sortable="'startDate'">{{customer.startDate | date : 'dd-MM-yyyy'}}</td>
+                          <td title="'Edit'">
+                             <button class="btn btn-primary" x-ng-click="openEditCustomerForm(customer)"><span class="glyphicon glyphicon-edit"></span></button>
+                          </td>
+                          <td title="'Delete'">
+                             <button class="btn btn-danger" x-ng-click="deleteCustomer(customer.customerID)"><span class="glyphicon glyphicon-trash"></span></button>
+                          </td>
+                      </tr>
+            </table>
+		</div><!-- Panel Body End-->
+	    </div><!-- Panel End-->
 </div>
 	    

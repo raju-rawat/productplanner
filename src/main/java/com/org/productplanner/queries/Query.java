@@ -29,7 +29,7 @@ public class Query {
 											.append("ADDRESS,PHONE_NUMBER,GST,PAN_NUMBER,CUSTOMER_SPOC,")
 											.append("STATE,START_DATE) VALUES(?,?,?,?,?,?,?,?,?,?)").toString();
 	
-	public static final String DELETE_CUSTOMERS="DELETE FROM CUSTOMER_TBL WHERE CUSTOMER_ID in (#)";
+	public static final String DELETE_CUSTOMERS="DELETE FROM CUSTOMER_TBL WHERE CUSTOMER_ID = ? ";
 	
 	public static final String UPDATE_CUSTOMER="UPDATE CUSTOMER_TBL SET CUSTOMER_NAME = ?,ADDRESS = ?,PHONE_NUMBER = ?,GST = ?,PAN_NUMBER = ?,CUSTOMER_SPOC = ?,STATE = ?,MODIFIED_DATE = ? WHERE CUSTOMER_ID = ?";
 	

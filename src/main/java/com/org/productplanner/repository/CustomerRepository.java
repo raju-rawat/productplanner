@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.productplanner.beans.Customer;
 import com.org.productplanner.rowmappers.CustomerRowMapper;
 
@@ -17,9 +16,6 @@ import java.util.List;
 @Transactional
 public class CustomerRepository{
 
-	@Autowired
-	private ObjectMapper objectMapper;
-	
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
@@ -40,22 +36,13 @@ public class CustomerRepository{
             			});
     }
     
-    public List<Customer> getCustomerIdAndName()
-    {
-    	List<Customer> customers=jdbcTemplate.query("SELECT CUSTOMER_ID,CUSTOMER_NAME FROM CUSTOMER_TBL",
-                				(rs, rowNum) -> new Customer(rs.getString("CUSTOMER_ID"),rs.getString("CUSTOMER_NAME")));
-    	
-    	return customers;
-    }
-    public void delete(String listOfCustomerIds)
+    public void delete(String customerID)
 	{
-    	jdbcTemplate.update(DELETE_CUSTOMERS.replaceAll("#",listOfCustomerIds));
+    	jdbcTemplate.update(DELETE_CUSTOMERS,customerID);
 	}
     
-	public void update(List<Customer> listOfCustomers)
+	public void update(Customer customer)
 	{
-		for (Object obj : listOfCustomers) {
-			Customer customer=objectMapper.convertValue(obj, Customer.class);
     		jdbcTemplate.update(UPDATE_CUSTOMER, 
     				customer.getCustomerName(),
     				customer.getAddress(),
@@ -66,10 +53,9 @@ public class CustomerRepository{
     				customer.getState(),
     				new Date(),
     				customer.getCustomerID());
-		}
 	}
 	
-	public List<Customer> getAll()
+	public List<Customer> getCustomers()
 	{
 		return jdbcTemplate.query(GET_CUSTOMER, new CustomerRowMapper());
 	}

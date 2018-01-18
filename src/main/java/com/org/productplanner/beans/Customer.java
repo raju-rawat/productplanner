@@ -29,28 +29,6 @@ public class Customer {
 	{
 		
 	}
-	
-	public Customer(String customerID, String customerName)
-	{
-		this.customerID = customerID;
-		this.customerName = customerName;
-	}
-	
-	//Parametrized constructor
-	public Customer(int objid, String customerID, String customerName, String address, String phone, String gst,
-			String panNumber, String customerSPOC, String state, Date startDate) {
-
-		this.objid = objid;
-		this.customerID = customerID;
-		this.customerName = customerName;
-		this.address = address;
-		this.phone = phone;
-		this.gst = gst;
-		this.panNumber = panNumber;
-		this.customerSPOC = customerSPOC;
-		this.state = state;
-		this.startDate = startDate;
-	}
 
 	public int getObjid() {
 		return objid;

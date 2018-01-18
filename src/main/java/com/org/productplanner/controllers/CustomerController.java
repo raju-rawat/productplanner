@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,33 +21,33 @@ public class CustomerController {
 	@Autowired
 	CustomerService customerService;
 	
-	@RequestMapping(value="/generate/Id",method = RequestMethod.GET)
+	@RequestMapping(value="/{generateId}",method = RequestMethod.GET)
 	public @ResponseBody Map<String,String> generateCustomerId()
 	{
 		return customerService.generateID("CUST_", "CUSTOMER_TBL", "customerID");
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody void save(@RequestBody Customer customer)
-	{
-		customerService.addCustomer(customer);
-	}
-	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<Customer> getCustomer()
+	public @ResponseBody List<Customer> get()
 	{
 		return customerService.getCustomers();
 	}
-	
-	@RequestMapping(value="/all",method = RequestMethod.GET)
-	public @ResponseBody List<Customer> getAllCustomer()
+
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody void save(@RequestBody Customer customer)
 	{
-		return customerService.getAllCustomer();
+		customerService.save(customer);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT)
+	public @ResponseBody void update(@RequestBody Customer customer)
+	{
+		customerService.update(customer);
 	}
 	
-	@RequestMapping(value="/update",method = RequestMethod.POST)
-	public @ResponseBody void updateCustomer(@RequestBody Map<String,Object> customerMap)
+	@RequestMapping(value="/{customerID}",method = RequestMethod.DELETE)
+	public @ResponseBody void delete(@PathVariable(value="customerID") String customerID)
 	{
-		customerService.updateCustomer(customerMap);
+		customerService.delete(customerID);
 	}
 }

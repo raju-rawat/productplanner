@@ -1,42 +1,55 @@
 
-app.controller('customerController', ['$scope','stateService','$http','deliveryNoteService','$window',function($scope,stateService,$http,deliveryNoteService,$window) {
-	$scope.heading='Add Customer';
-	$scope.customer={
-			startDate: new Date()
-	}
+app.controller('customerController', ['$scope','stateService','customerService','popUpService','NgTableParams',function($scope,stateService,customerService,popUpService,NgTableParams) {
+	
 	$scope.customers=[];
 	$scope.deletedCustomers=[];
 	$scope.updatedCustomers=[];
 	$scope.modes={
-			add : true,
-			view : false,
-			edit : false,
+			add : false,
+			view : true
 	};
-	
+	$scope.generateCustomerID=function()
+	{
+		var _customer=customerService.get({_Id:'generateId'},
+		function successCallback()
+		{
+			$scope.customer.customerID=_customer.customerID;
+		},
+		function failureCallback()
+		{
+			popUpService.openInfoBox('Error generating Customer Id!',$scope);
+		});
+	}
+
+	var customerInit=function()
+	{
+		$scope.customer={
+				customerName: '',
+				address: '',
+				phone: undefined,
+				gst: undefined,
+				panNumber: '',
+				customerSPOC: '',
+				state: '',
+				startDate: new Date()
+		}
+		$scope.generateCustomerID();
+	}
+	customerInit();
 	$scope.changeMode=function(activeMode)
 	{
 		angular.forEach($scope.modes,function(value,mode){
 			$scope.modes[mode] = mode==activeMode?true:false;
 		})
-		if($scope.modes.view || $scope.modes.edit)
+		if($scope.modes.add)
 		{
-			$scope.viewCustomers();
+			$scope.generateCustomerID();
+		}
+		else if($scope.modes.view)
+		{
+			getCustomerList();
 		}
 	}
-	
-	$scope.generateCustomerID=function()
-	{
-		deliveryNoteService.generateID('customer')
-		.then(function successCallback(response) 
-		{
-			$scope.customer.customerID=response.data.customerID;
-			
-		},function failureCallback(response){
-			$window.alert('Server Error!');
-		});
-	}
-	
-	$scope.generateCustomerID();
 	
 	//Service returns a promise object, 
 	//So it is better to use 'then' in controller and not in service.
@@ -48,60 +61,58 @@ app.controller('customerController', ['$scope','stateService','$http','deliveryN
 	
 	$scope.addCustomer=function(customer)
 	{
-		// Simple POST request
-    	$http({
-    	  method: 'POST',
-    	  url: '/customer',
-    	  data: customer
-    	}).then(function successCallback(response) {
-    	    // this callback will be called asynchronously
-    	    // when the response is available
-    		$window.alert('Customer Added Successfully!');
-			$scope.customer={};
-			$scope.generateCustomerID();
-    		
-    	  }, function errorCallback(response) {
-    		  $window.alert('Error Adding Customer!');
-    	  });
-	}
-	
-	$scope.viewCustomers=function()
-	{
-		//This service gets all the customers
-		deliveryNoteService.getObject('customer/all').then(function successCallback(response) 
+		customerService.save(customer,function()
 		{
-			var count=0;
-			$scope.customers=response.data;
-			angular.forEach($scope.customers,function(value,key){
-				value.sno=++count;
-			});
+			customerInit();
+			popUpService.openInfoBox('Customer Added Successfully!',$scope);
+		},
+		function()
+		{
+			popUpService.openInfoBox('Server Error!',$scope);
 		});
 	}
 	
-	$scope.deleteCustomer=function(index)
+	var getCustomerList=function()
 	{
-		var customer=$scope.customers[index];
-		$scope.deletedCustomers.push(customer.customerID);
-		$scope.customers.splice(index,1);
-		resetSno();
+		var customers=customerService.query(function(){
+			$scope.tableCustomer = new NgTableParams({}, { dataset: customers});
+		});
 	}
-	
-	$scope.updateCustomer=function(index)
+	getCustomerList();
+	$scope.deleteCustomer=function(customerID)
 	{
-		var present=false;
-		var customer=$scope.customers[index];
-		angular.forEach($scope.updatedCustomers,function(value,key){
-			if(customer == value)
+		popUpService.openConfirmBox('customer',$scope).then(function (success) 
+		{
+			customerService.remove({_Id: customerID},function()
 			{
-				present=true;
-			}
+				getCustomerList();
+				popUpService.openInfoBox('Customer Deleted Successfully!',$scope);
+			},
+			function()
+			{
+				popUpService.openInfoBox('Server Error!',$scope);
+			});
+		}, function (failure){
+			//do nothing
 		});
-		if(!present)
-		{
-			$scope.updatedCustomers.push(customer);
-		}
 	}
 	
+	$scope.updateCustomer=function(customer)
+	{
+		customerService.update(customer,function()
+		{
+			popUpService.openInfoBox('Customer Updated Successfully!',$scope);
+		},
+		function()
+		{
+			popUpService.openInfoBox('Server Error!',$scope);
+		});
+	}
+	$scope.openEditCustomerForm=function(customer)
+    {
+    	$scope.editCustomer=customer;
+    	popUpService.openEditForm($scope,'views/customer/EditCustomers.html',600);
+    }
 	$scope.updateCustomers=function()
 	{
 		if($scope.deletedCustomers.length==0 && $scope.updatedCustomers.length==0)
@@ -131,25 +142,6 @@ app.controller('customerController', ['$scope','stateService','$http','deliveryN
 		}
 	}
 	
-	resetSno=function()
-	{
-		var sno=0;
-		angular.forEach($scope.customers,function(customer,key){
-			customer.sno=++sno;
-		});
-	}
-	$scope.reset = function(customerform) {
-        if (customerform) {
-        	customerform.$setPristine();
-        	customerform.$setUntouched();
-        	$scope.customer={
-        			startDate: new Date()
-        	}
-        	$scope.successMsg=undefined;
-        	$scope.errorMsg=undefined;
-        	$scope.generateCustomerID();
-        }
-    };
     $scope.today = function () {
         $scope.customer.startDate = new Date();
     };
