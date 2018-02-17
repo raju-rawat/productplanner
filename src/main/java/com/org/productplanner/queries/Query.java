@@ -22,6 +22,21 @@ public class Query {
 	public static final String GET_VARIANTS="select TAX from view_billing_details where invoice_id in(#) group by (TAX) order by TAX";
 	
 	/**
+	 * Patients
+	 */
+	
+	public static final String GET_PATIENTS="SELECT * FROM TABLE_PATIENT";
+	
+	public static final String ADD_PATIENT=new StringBuilder()
+										   .append("INSERT INTO TABLE_PATIENT(OBJID,PATIENT_ID,PATIENT_NAME,MOBILE,")
+										   .append("STATUS,ADDRESS,EFFECTIVE_DATE)")
+										   .append("VALUES(?,?,?,?,?,?,?)").toString();
+	
+	public static final String DELETE_PATIENT="DELETE FROM TABLE_PATIENT WHERE PATIENT_ID = ? ";
+	
+	public static final String UPDATE_PATIENT="UPDATE TABLE_PATIENT SET PATIENT_NAME = ? ,MOBILE = ?,STATUS= ? ,ADDRESS = ?, MODIFIED_DATE =  ? where PATIENT_ID = ? ";
+		
+	/**
 	 * Customer
 	 */
 	public static final String ADD_CUSTOMER=new StringBuilder()

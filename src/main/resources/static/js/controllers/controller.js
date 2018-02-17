@@ -1,11 +1,16 @@
-
-app.controller('homeController', function($rootScope) {
+app.controller('homeController',['$rootScope','$scope','$location','$route', function($rootScope,$scope,$location,$route) 
+{
+	$scope.$route = $route;
+	
 	$rootScope.isLoggedIn=false;
-	this.logout=function()
+	
+	$scope.logout=function()
 	{
 		$rootScope.isLoggedIn=false;
+		$location.path('/dashboard');
 	}
-});
+	$location.path('/dashboard');
+}]);
 
 app.controller('loginController', ['$scope','$rootScope','$location','$http','$window',function($scope,$rootScope,$location,$http,$window) {
 	$scope.heading='Login In';

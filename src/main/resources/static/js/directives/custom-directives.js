@@ -98,6 +98,27 @@ app.directive('viewProducts', function() {
 	   return directive;
 	});
 
+app.directive('addPatient', function() {
+	   var directive = {};
+	   
+	   directive.restrict = 'E';
+	   
+	   directive.templateUrl = "/views/patient/AddPatient.html";
+	   
+	   return directive;
+	});
+
+app.directive('viewPatients', function() {
+	   var directive = {};
+	   
+	   directive.restrict = 'E';
+	   
+	   directive.templateUrl = "/views/patient/ViewPatients.html";
+	   
+	   return directive;
+	});
+
+
 app.directive('addCustomer', function() {
 	   var directive = {};
 	   

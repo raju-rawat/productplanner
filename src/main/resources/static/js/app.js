@@ -6,9 +6,10 @@ app.config(function($routeProvider){
         .when('/login',{
         	
             templateUrl: '/views/LoginPage.html',
-            controller: 'loginController'
+            controller: 'loginController',
+            activePage: 'login'
         })
-        .when('/product',{
+        .when('/addProduct',{
         	resolve:{
         		"check":function($rootScope,$location)
         		{
@@ -18,10 +19,11 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/product/Product.html',
-            controller: 'productController'
+            templateUrl: '/views/product/AddProducts.html',
+            controller: 'productController',
+            activePage: 'product'
         })
-        .when('/user',{
+        .when('/viewProduct',{
         	resolve:{
         		"check":function($rootScope,$location)
         		{
@@ -31,10 +33,11 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/user/User.html',
-            controller: 'userController'
+            templateUrl: '/views/product/ViewProducts.html',
+            controller: 'productController',
+            activePage: 'product'
         })
-        .when('/deliveryNote',{
+        .when('/addPatient',{
         	resolve:{
         		"check":function($rootScope,$location)
         		{
@@ -44,10 +47,11 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/order/Order.html',
-            controller: 'OrderController'
+            templateUrl: '/views/patient/AddPatient.html',
+            controller: 'patientController',
+            activePage: 'patient'
         })
-        .when('/customer',{
+        .when('/viewPatient',{
         	resolve:{
         		"check":function($rootScope,$location)
         		{
@@ -57,12 +61,112 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/customer/Customer.html',
-            controller: 'customerController'
+            templateUrl: '/views/patient/ViewPatients.html',
+            controller: 'patientController',
+            activePage: 'patient'
+        })
+        .when('/addUser',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/user/AddUser.html',
+            controller: 'userController',
+            activePage: 'user'
+        })
+        .when('/viewUser',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/user/ViewUsers.html',
+            controller: 'userController',
+            activePage: 'user'
+        })
+        .when('/createOrder',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/order/CreateOrder.html',
+            controller: 'OrderController',
+            activePage: 'order'
+        })
+        .when('/viewOrder',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/order/ViewOrder.html',
+            controller: 'OrderController',
+            activePage: 'order'
+        })
+        .when('/addCustomer',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/customer/AddCustomer.html',
+            controller: 'customerController',
+            activePage: 'customer'
+        })
+        .when('/viewCustomer',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/customer/ViewCustomers.html',
+            controller: 'customerController',
+            activePage: 'customer'
         })
         .when('/owner',{
             templateUrl: '/views/OwnerInfo.html',
-            controller: 'ownerController'
+            controller: 'ownerController',
+            activePage: 'owner'
+        })
+        .when('/generateInvoice',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/InvoiceGeneration.html',
+            controller: 'invoiceController',
+            activePage: 'invoice'
         })
         .when('/invoice',{
         	resolve:{
@@ -75,7 +179,8 @@ app.config(function($routeProvider){
         		}
         	},
             templateUrl: '/views/InvoiceGeneration.html',
-            controller: 'invoiceController'
+            controller: 'invoiceController',
+            activePage: 'invoice'
         })
         .when('/installment',{
         	resolve:{
@@ -88,9 +193,10 @@ app.config(function($routeProvider){
         		}
         	},
             templateUrl: '/views/InstallmentReceipt.html',
-            controller: 'installmentReceiptController'
+            controller: 'installmentReceiptController',
+            activePage: 'installment'
         })
-        .when('/reports',{
+        .when('/salesReport',{
         	resolve:{
         		"check":function($rootScope,$location)
         		{
@@ -100,21 +206,56 @@ app.config(function($routeProvider){
         				}
         		}
         	},
-            templateUrl: '/views/Reports.html',
-            controller: 'reportController'
+            templateUrl: '/views/SalesReport.html',
+            controller: 'reportController',
+            activePage: 'report'
+        })
+        .when('/receiptReport',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/ReceiptReport.html',
+            controller: 'reportController',
+            activePage: 'report'
+        })
+        .when('/stockWiseReport',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/StockWiseReport.html',
+            controller: 'reportController',
+            activePage: 'report'
+        })
+        .when('/partyWiseReport',{
+        	resolve:{
+        		"check":function($rootScope,$location)
+        		{
+        			if(!$rootScope.isLoggedIn)
+        				{
+        					$location.path("/login");
+        				}
+        		}
+        	},
+            templateUrl: '/views/PartyWiseReport.html',
+            controller: 'reportController',
+            activePage: 'report'
         })
         .when('/dashboard',{
-        	resolve:{
-        		"check":function($rootScope,$location)
-        		{
-        			if(!$rootScope.isLoggedIn)
-        				{
-        					$location.path("/login");
-        				}
-        		}
-        	},
+        	
             templateUrl: '/views/DashBoard.html',
-            controller: 'dashboardController'
+            controller: 'dashboardController',
         })
         .otherwise(
             { redirectTo: '/'}
@@ -122,3 +263,4 @@ app.config(function($routeProvider){
     
     //$locationProvider.html5Mode(true);
 });
+

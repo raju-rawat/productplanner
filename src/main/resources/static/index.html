@@ -20,24 +20,82 @@
 	<link rel="stylesheet" href="css/ng-table.min.css">
 	
 </head>
-<body x-ng-controller="homeController as homeCtrl">
+<body x-ng-controller="homeController">
 <nav class="navbar navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#/!"><span class="glyphicon glyphicon-home"></span>&nbsp;Billing Application</a>
+      <a class="navbar-brand" href="#!dashboard"><span class="glyphicon glyphicon-home"></span>&nbsp;Billing Application</a>
     </div>
     <ul class="nav navbar-nav navbar-right">
-           	 <li class="active" x-ng-show="!isLoggedIn"><a href="#!login"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;Login</a> </li>
-           	 <li class="active" x-ng-show="isLoggedIn" x-ng-click="homeCtrl.logout()"><a href="#!logout"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a> </li>
-           	 <li class=""> <a href="#!owner"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>&nbsp;About</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!product"><i class="fa fa-product-hunt" aria-hidden="true"></i>&nbsp;Products</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!user"><i class="fa fa-users" aria-hidden="true"></i>&nbsp;Users</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!customer"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;Customers</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!deliveryNote"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>&nbsp;Order Generation</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!invoice"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Invoice Generation</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"><a href="#!installment"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Installment Receipt</a> </li>
-		     <li class="" x-ng-show="isLoggedIn"> <a href="#!reports"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Reports</a> </li>
-		   </ul>
+	   	 <li x-ng-show="!isLoggedIn">
+	   	 	<a x-ng-class="{'active-tab': $route.current.activePage == 'login'}" href="#!login"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;Login</a> 
+	   	 </li>
+	   	 <li x-ng-show="isLoggedIn" x-ng-click="logout()">
+	   	 	<a x-ng-class="{'active-tab': $route.current.activePage == 'logout'}" href="#!logout"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a> 
+	   	 </li>
+	   	 <li> 
+	   	 	<a x-ng-class="{'active-tab': $route.current.activePage == 'owner'}" href="#!owner"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>&nbsp;About</a> 
+	   	 </li>
+	   	 
+	   	 <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'product'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-product-hunt"></i>&nbsp;Products <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!addProduct">Add Product</a></li>
+	            <li><a href="#!viewProduct">View/Edit Products</a></li>
+	          </ul>
+	     </li>
+	     <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'user'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i>&nbsp;Users <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!addUser">Add User</a></li>
+	            <li><a href="#!viewUser">View/Edit Users</a></li>
+	          </ul>
+	     </li>
+	     <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'customer'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user-circle"></i>&nbsp;Customers <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!addCustomer">Add Customer</a></li>
+	            <li><a href="#!viewCustomer">View/Edit Customers</a></li>
+	          </ul>
+	     </li>
+	     <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'patient'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wheelchair"></i>&nbsp;Patients <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!addPatient">Add Patient</a></li>
+	            <li><a href="#!viewPatient">View/Edit Patients</a></li>
+	          </ul>
+	     </li>
+	     <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'order'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sticky-note-o"></i>&nbsp;Orders <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!createOrder">Create Order</a></li>
+	            <li><a href="#!viewOrder">View/Edit Orders</a></li>
+	          </ul>
+	     </li>
+	     <li class="dropdown"  x-ng-show="false">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'invoice'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file"></i>&nbsp;Invoices <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!generateInvoice">Generate Invoice</a></li>
+	            <li><a href="#!viewInvoice">View Invoices</a></li>
+	          </ul>
+	     </li>
+	     <li x-ng-show="isLoggedIn">
+	     	<a x-ng-class="{'active-tab': $route.current.activePage == 'invoice'}"  href="#!invoice"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Invoice Generation</a> 
+	     </li>
+	     <li x-ng-show="isLoggedIn">
+	     	<a x-ng-class="{'active-tab': $route.current.activePage == 'installment'}" href="#!installment"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Installment Receipt</a> 
+	     </li>
+	     <li class="dropdown"  x-ng-show="isLoggedIn">
+	          <a x-ng-class="{'active-tab': $route.current.activePage == 'report'}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart"></i>&nbsp;Reports <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#!salesReport">Sales Report</a></li>
+	            <li><a href="#!receiptReport">Receipt Report</a></li>
+	            <li><a href="#!stockWiseReport">Stock Wise Report</a></li>
+	            <li><a href="#!partyWiseReport">Party Wise Report</a></li>
+	          </ul>
+	     </li>
+	     
+   </ul>
   </div>
 </nav>
 
@@ -86,6 +144,7 @@
 <script src="js/controllers/invoice-controller.js"></script>
 <script src="js/controllers/receipt-controller.js"></script>
 <script src="js/controllers/report-controller.js"></script>
+<script src="js/controllers/patient-controller.js"></script>
 <script src="js/service.js"></script>
 <script src="js/filters.js"></script>
  

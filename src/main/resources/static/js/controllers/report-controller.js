@@ -1,4 +1,4 @@
-app.controller('reportController', ['$scope','deliveryNoteService','$window','$http',function($scope,deliveryNoteService,$window,$http) {
+app.controller('reportController', ['$scope','deliveryNoteService','$window','$http','$location',function($scope,deliveryNoteService,$window,$http,$location) {
 	$scope.simple=false;
 	$scope.activeMode='';
 	$scope.report={
@@ -20,14 +20,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 		angular.forEach($scope.modes,function(value,mode){
 			$scope.modes[mode] = mode==activeMode?true:false;
 		})
-		if($scope.modes.partyWise)
-		{
-			$scope.fetchCustomer();
-		}
-		if($scope.modes.sales || $scope.modes.stockWise)
-		{
-			$scope.fetchProducts();
-		}
+		
 	}
 	
 	$scope.fetchProducts=function()
@@ -46,6 +39,9 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 			$scope.customers=response.data;
 		});
 	}
+	$scope.fetchCustomer();
+	$scope.fetchProducts();
+	
 	$scope.loadCustomerName=function()
 	{
 		var customerID=$scope.report.customerID;
@@ -91,8 +87,9 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 	
 	$scope.generateReport=function()
 	{
-		if($scope.modes.receipt)
+		if('/receiptReport'==$location.path())
 		{
+			$scope.activeMode='receipt';
 			$scope.report.totalAmountReceived=0;
 			deliveryNoteService.submit('/receipt/'+$scope.simple,$scope.report)
 			.then(function successCallback(response){
@@ -114,8 +111,9 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 				$window.alert('Server Error');
 			})
 		}
-		else if($scope.modes.sales)
+		else if('/salesReport'==$location.path())
 		{
+			$scope.activeMode='sales';
 			deliveryNoteService.submit('/invoice/report/'+$scope.simple,$scope.report)
 			.then(function successCallback(response){
 				$scope.report.invoices=response.data.invoices;
@@ -136,7 +134,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 				$window.alert('Server Error');
 			})
 		}
-		else if($scope.modes.stockWise)
+		else if('/stockWiseReport'==$location.path())
 		{
 			if(!$scope.report.productID)
 			{
@@ -144,6 +142,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 			}
 			else
 			{
+				$scope.activeMode='stockWise';
 				deliveryNoteService.submit('/reports/stocks/'+$scope.simple,$scope.report)
 				.then(function successCallback(response){
 					$scope.report.stocks=response.data;
@@ -167,7 +166,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 				})
 			}
 		}
-		else if($scope.modes.partyWise)
+		else if('/partyWiseReport'==$location.path())
 		{
 			if(!$scope.report.customerID)
 			{
@@ -179,6 +178,7 @@ app.controller('reportController', ['$scope','deliveryNoteService','$window','$h
 			}
 			else
 			{
+				$scope.activeMode='partyWise';
 				deliveryNoteService.submit('/reports/partyWise/'+$scope.simple,$scope.report)
 				.then(function successCallback(response){
 					$scope.report.parties=response.data;

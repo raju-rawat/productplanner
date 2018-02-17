@@ -20,6 +20,14 @@ app.factory('productService',function($resource){
 	);
 })
 
+app.factory('patientService',function($resource){
+	return $resource('/patient/:_Id',{_Id: '@_Id'},
+		{
+			'update': { method:'PUT' }
+		}
+	);
+})
+
 app.factory('userService',function($resource){
 	return $resource('/user/:_Id',{_Id: '@_Id'},
 		{

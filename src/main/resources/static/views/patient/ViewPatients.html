@@ -1,0 +1,32 @@
+<div class="col-md-12" style="margin-top:5px; margin-bottom: 80px; width: 100%;">
+<div class="panel panel-info panel-table">
+	
+	    <div class="panel-heading">
+		    <div class="row">
+	                  <div class="col col-md-12">
+	                    <h1 class="panel-title" border="2">Patients</h1>
+	                  </div>
+	         </div>
+		</div><!-- Panel Heading end-->
+		<div class="panel-body">
+				<table data-ng-table="tablePatient" class="table table-condensed table-bordered table-striped" data-show-filter="true">
+					
+		                  <tr x-ng-repeat="patient in $data">
+		                  	  <td title="'S. No.'">{{$index+1}}</td>
+	                          <td title="'Patient ID'" data-filter="{ id : 'text'}" data-sortable="'id'">{{patient.id}}</td>
+	                          <td title="'Patient Name'" data-filter="{ name : 'text'}" data-sortable="'name'">{{patient.name}}</td>
+	                          <td title="'Mobile Number'" data-filter="{ mobile : 'number'}" data-sortable="'mobile'">{{patient.mobile}}</td>
+	                          <td title="'Address'" data-filter="{ address : 'text'}" data-sortable="'address'">{{patient.address}}</td>
+	                          <td title="'Status'" data-filter="{ status : 'text'}" data-sortable="'status'">{{patient.status}}</td>
+	                          <td title="'Effective Date'" data-filter="{ effectiveDate : 'text'}" data-sortable="'effectiveDate'">{{patient.effectiveDate | date: 'short' }}</td>
+	                          <td title="'Edit'">
+	                             <button class="btn btn-primary" x-ng-click="openEditPatientForm(patient)"><span class="glyphicon glyphicon-edit"></span></button>
+	                          </td>
+	                          <td title="'Delete'">
+	                             <button class="btn btn-danger" x-ng-click="deletePatient(patient.id)"><span class="glyphicon glyphicon-trash"></span></button>
+	                          </td>
+	                      </tr>
+                </table>
+		</div><!-- Panel body end-->
+	    </div><!-- Panel end-->
+</div>
